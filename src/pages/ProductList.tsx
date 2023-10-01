@@ -1,12 +1,11 @@
-// import { Product } from "../types/Product";
-
 import { useEffect } from "react";
+import { Box, CardMedia, Grid } from "@mui/material";
+
 import useAppDispatch from "../hooks/useAppDispatch";
 import useAppSelector from "../hooks/useAppSelector";
 import { fetchAllProductsAsync } from "../redux/reducers/productReducer";
-import { Box, Grid } from "@mui/material";
 import ProductItem from "../components/ProductItem";
-import Pagination from "../components/Pagination";
+import PaginationBar from "../components/PaginationBar";
 import FilterBar from "../components/FilterBar";
 
 const ProductList = () => {
@@ -22,8 +21,13 @@ const ProductList = () => {
 
   return (
     <Box>
-      <Box>Image Banner</Box>
-      <Pagination />
+      <CardMedia
+        component="img"
+        height="600"
+        image="/raul-gonzalez-escobar-ZpIskW1Tuvc-unsplash.jpg"
+        alt="market"
+      />
+      <PaginationBar />
       <FilterBar />
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={2}>

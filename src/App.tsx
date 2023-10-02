@@ -6,20 +6,23 @@ import ProductDetails from "./pages/ProductDetails";
 import Cart from "./pages/Cart";
 import ProfilePage from "./pages/ProfilePage";
 import Register from "./pages/Register";
+import { Box, Stack } from "@mui/material";
 
 const App = () => {
   return (
-    <div>
+    <Stack sx={{ minHeight: "100vh" }}>
       <Header />
-      <Routes>
-        <Route path="/" element={<ProductList />} />
-        <Route path=":id" element={<ProductDetails />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/register" element={<Register />} />
-      </Routes>
+      <Box sx={{ alignItems: "flex-start" }}>
+        <Routes>
+          <Route path="/" element={<ProductList />} />
+          <Route path=":id" element={<ProductDetails />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/register" element={<Register />} />
+        </Routes>
+      </Box>
       <Footer />
-    </div>
+    </Stack>
   );
 };
 

@@ -2,7 +2,6 @@ import axios from "axios";
 
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Product } from "../../types/Product/Product";
-import { ProductUpdate } from "../../types/Product/ProductUpdate";
 
 const initialState: Product[] = [];
 const baseUrl = "https://api.escuelajs.co/api/v1/products";
@@ -27,7 +26,7 @@ export const addProductAsync = createAsyncThunk(
 
 export const updateProductAsync = createAsyncThunk(
   "updateProductAsync",
-  async (productUpdate: ProductUpdate) => {
+  async (productUpdate: Partial<Product>) => {
     const { id, ...updateData } = productUpdate;
     const response = await axios.put(`${baseUrl}/${id}`, updateData);
     const data: Product = response.data;

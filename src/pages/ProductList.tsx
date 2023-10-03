@@ -7,7 +7,7 @@ import { fetchAllProductsAsync } from "../redux/reducers/productReducer";
 import ProductItem from "../components/ProductItem";
 import PaginationBar from "../components/PaginationBar";
 import FilterBar from "../components/FilterBar";
-import { paginationLoader } from "../utils/helpers";
+import { paginationLoader } from "../utils/paginationLoader";
 
 const ProductList = () => {
   const [page, setPage] = useState<number>(1);
@@ -34,7 +34,7 @@ const ProductList = () => {
       <CardMedia
         component="img"
         height="600"
-        image="/raul-gonzalez-escobar-ZpIskW1Tuvc-unsplash.jpg"
+        image="/assets/shop-banner.jpg"
         alt="market"
       />
       <Container>

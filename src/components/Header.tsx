@@ -2,7 +2,6 @@ import StoreOutlinedIcon from "@mui/icons-material/StoreOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { Link } from "react-router-dom";
 import {
-  Box,
   AppBar,
   Toolbar,
   IconButton,
@@ -12,20 +11,21 @@ import {
 } from "@mui/material";
 
 import useAppSelector from "../hooks/useAppSelector";
+import HideOnScroll from "./HideOnScroll";
 
 const Header = () => {
   const cart = useAppSelector((state) => state.cartReducer);
 
   return (
-    <Box>
-      <AppBar position="static">
+    <HideOnScroll>
+      <AppBar>
         <Toolbar>
           <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
             <IconButton
               size="large"
               edge="start"
               color="inherit"
-              aria-label="menu"
+              aria-label="home-button-icon"
               sx={{ mr: 2 }}
             >
               <StoreOutlinedIcon />
@@ -42,7 +42,7 @@ const Header = () => {
           </Link>
         </Toolbar>
       </AppBar>
-    </Box>
+    </HideOnScroll>
   );
 };
 

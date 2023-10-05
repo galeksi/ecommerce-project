@@ -21,6 +21,7 @@ const UserHeaderMenu = () => {
 
   const handleLogout = () => {
     dispatch(logoutUser());
+    localStorage.removeItem("access_token");
     navigate("/");
   };
 

@@ -7,8 +7,31 @@ import Cart from "./pages/Cart";
 import ProfilePage from "./pages/ProfilePage";
 import Register from "./pages/Register";
 import { Box, Stack } from "@mui/material";
+import { useEffect } from "react";
+import useAppDispatch from "./hooks/useAppDispatch";
+import { authenticateUserAsync } from "./redux/reducers/userReducer";
+import { AxiosError } from "axios";
 
 const App = () => {
+  const dispatch = useAppDispatch();
+
+  const checkUser = async () => {
+    const token = localStorage.getItem("access_token");
+    if (token) {
+      try {
+        await dispatch(authenticateUserAsync(token));
+      } catch (error) {
+        const newError = error as AxiosError;
+        console.log(newError.message);
+      }
+    }
+  };
+
+  useEffect(() => {
+    checkUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <Stack sx={{ minHeight: "100vh" }}>
       <Header />

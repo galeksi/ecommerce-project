@@ -46,6 +46,7 @@ export const loginUserAsync = createAsyncThunk<
     ) {
       throw Error(authenticatedResult.payload || "Cannot login");
     } else {
+      localStorage.setItem("access_token", access_token);
       return authenticatedResult.payload;
     }
   } catch (e) {
@@ -84,6 +85,20 @@ export const registerUserAsync = createAsyncThunk<
     const response = await axios.post(`${baseUrl}/users`, userData);
     const newUser: User = response.data;
     return newUser;
+  } catch (e) {
+    const error = e as AxiosError;
+    return rejectWithValue(error.message);
+  }
+});
+
+export const deleteUserAsync = createAsyncThunk<
+  number,
+  number,
+  { rejectValue: string }
+>("deleteUserAsync", async (id, { rejectWithValue }) => {
+  try {
+    await axios.delete(`${baseUrl}/users/${id}`);
+    return id;
   } catch (e) {
     const error = e as AxiosError;
     return rejectWithValue(error.message);
@@ -157,6 +172,25 @@ const userSlice = createSlice({
         state.currentUser = action.payload;
       })
       .addCase(registerUserAsync.rejected, (state, action) => {
+        state.loading = false;
+        if (action.payload) {
+          state.error = action.payload;
+        } else {
+          state.error = "An unknow error occured";
+        }
+      });
+    builder
+      .addCase(deleteUserAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(deleteUserAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        const deleteIndex = state.users.findIndex(
+          (u) => u.id === action.payload
+        );
+        state.users.splice(deleteIndex, 1);
+      })
+      .addCase(deleteUserAsync.rejected, (state, action) => {
         state.loading = false;
         if (action.payload) {
           state.error = action.payload;

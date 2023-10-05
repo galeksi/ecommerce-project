@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { AxiosError } from "axios";
 import {
   Container,
   IconButton,
@@ -16,7 +17,10 @@ import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined
 
 import useAppSelector from "../hooks/useAppSelector";
 import useAppDispatch from "../hooks/useAppDispatch";
-import { fetchAllUsersAsync } from "../redux/reducers/userReducer";
+import {
+  deleteUserAsync,
+  fetchAllUsersAsync,
+} from "../redux/reducers/userReducer";
 
 const AdminPanel = () => {
   const { users } = useAppSelector((state) => state.userReducer);
@@ -26,6 +30,17 @@ const AdminPanel = () => {
     dispatch(fetchAllUsersAsync());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const deleteUser = async (id: number, name: string) => {
+    if (window.confirm(`Do you want to delete ${name}?`)) {
+      try {
+        await dispatch(deleteUserAsync(id));
+      } catch (error) {
+        const newError = error as AxiosError;
+        console.log(newError.message);
+      }
+    }
+  };
 
   return (
     <Container sx={{ mt: 10, px: 5 }}>
@@ -66,6 +81,7 @@ const AdminPanel = () => {
                         size="large"
                         color="inherit"
                         aria-label="item-delete-button"
+                        onClick={() => deleteUser(user.id, user.name)}
                       >
                         <DeleteForeverOutlinedIcon />
                       </IconButton>

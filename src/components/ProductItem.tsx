@@ -7,6 +7,7 @@ import {
   CardMedia,
 } from "@mui/material";
 import { ProductItemProps } from "../types/components/ProductItemProps";
+import { Link } from "react-router-dom";
 
 const ProductItem = (props: ProductItemProps) => {
   const product = props.product;
@@ -25,10 +26,12 @@ const ProductItem = (props: ProductItemProps) => {
         </Typography>
         <Typography variant="h5">Price: {product.price} €</Typography>
       </CardContent>
-      <CardActions>
-        <Button variant="outlined" href={`/${product.id}`} sx={{ mx: "auto" }}>
-          Details
-        </Button>
+      <CardActions sx={{ display: "flex", justifyContent: "center" }}>
+        <Link to={`/${product.id}`} style={{ textDecoration: "none" }}>
+          <Button variant="outlined" sx={{ mx: "auto" }}>
+            Details
+          </Button>
+        </Link>
       </CardActions>
     </Card>
   );

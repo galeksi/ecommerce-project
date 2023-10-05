@@ -1,14 +1,61 @@
-import { Box, Typography } from "@mui/material";
+import { Box, CardMedia, Container, Grid, Typography } from "@mui/material";
+
+import useAppSelector from "../hooks/useAppSelector";
 import AdminPanel from "../components/AdminPanel";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const ProfilePage = () => {
+  const { currentUser, loading } = useAppSelector((state) => state.userReducer);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!currentUser) {
+      navigate("/");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const adminPanel =
+    currentUser && currentUser.role === "admin" ? <AdminPanel /> : <></>;
+
   return (
-    <Box>
-      <Box>
-        <Typography>Hello customer</Typography>
-      </Box>
-      <AdminPanel />
-    </Box>
+    <Container sx={{ mt: 10, px: 5 }}>
+      {loading && <div className="loader"></div>}
+      {currentUser && (
+        <Grid container spacing={2}>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <CardMedia
+              component="img"
+              image={currentUser.avatar}
+              alt={`${currentUser.name} avatar`}
+              sx={{ height: 300, width: 300, borderRadius: 50 }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Box>
+              <Typography variant="h2">
+                Hello,
+                <br />
+                {currentUser.name}
+              </Typography>
+              <Typography variant="h5" sx={{ mt: 3 }}>
+                Your email: {currentUser.email}
+              </Typography>
+            </Box>
+          </Grid>
+        </Grid>
+      )}
+      {adminPanel}
+    </Container>
   );
 };
 

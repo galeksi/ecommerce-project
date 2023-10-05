@@ -1,52 +1,94 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { User } from "../../types/User/User";
+import { UserState } from "../../types/User/UserState";
 import { Credentials } from "../../types/User/Credentials";
 import { UserRegister } from "../../types/User/UserRegister";
-import { EmailAvailableRes } from "../../types/axios/EmailAvailableRes";
 
-const initialState: User = {
-  id: 0,
-  email: "",
-  name: "",
-  role: "customer",
-  avatar: "",
+const initialState: UserState = {
+  users: [],
+  loading: false,
+  error: "",
 };
 
-const baseUrl = "https://api.escuelajs.co/api/v1/users";
+const baseUrl = "https://api.escuelajs.co/api/v1";
 
-export const loginUserAsync = createAsyncThunk(
-  "loginUserAsync",
-  async (login: Credentials) => {
-    const response = await axios.get(baseUrl);
-    const data: User[] = response.data;
-    const userExists = data.find(
-      (u) => u.email === login.email && u.password === login.password
-    );
-    if (userExists) {
-      const { password, ...userDetails } = userExists;
-      return userDetails;
-    }
+export const fetchAllUsersAsync = createAsyncThunk<
+  User[],
+  void,
+  { rejectValue: string }
+>("fetchAllUsersAsync", async (_, { rejectWithValue }) => {
+  try {
+    const result = await axios.get(`${baseUrl}/users`);
+    return result.data;
+  } catch (e) {
+    const error = e as AxiosError;
+    return rejectWithValue(error.message);
   }
-);
+});
 
-export const registerUserAsync = createAsyncThunk(
-  "registerUserAsync",
-  async (userData: UserRegister) => {
-    const emailAvailable: EmailAvailableRes = await axios.post(
-      `${baseUrl}/is-available`,
-      {
-        email: userData.email,
-      }
+export const loginUserAsync = createAsyncThunk<
+  User,
+  Credentials,
+  { rejectValue: string }
+>("loginUserAsync", async (credentials, { rejectWithValue, dispatch }) => {
+  try {
+    const result = await axios.post(`${baseUrl}/auth/login`, credentials);
+    const { access_token } = result.data;
+
+    const authenticatedResult = await dispatch(
+      authenticateUserAsync(access_token)
     );
-    if (emailAvailable.isAvailable) {
-      const newUser: User = await axios.post(baseUrl, userData);
-      const { password, ...userDetails } = newUser;
-      return userDetails;
+    if (
+      typeof authenticatedResult.payload === "string" ||
+      !authenticatedResult.payload
+    ) {
+      throw Error(authenticatedResult.payload || "Cannot login");
+    } else {
+      return authenticatedResult.payload;
     }
+  } catch (e) {
+    console.log("error catched");
+
+    const error = e as AxiosError;
+    return rejectWithValue(error.message);
   }
-);
+});
+
+export const authenticateUserAsync = createAsyncThunk<
+  User,
+  string,
+  { rejectValue: string }
+>("authenticateUserAsync", async (token, { rejectWithValue }) => {
+  try {
+    const response = await axios.get(`${baseUrl}/auth/profile`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const userProfile: User = response.data;
+    return userProfile;
+  } catch (e) {
+    const error = e as AxiosError;
+    return rejectWithValue(error.message);
+  }
+});
+
+export const registerUserAsync = createAsyncThunk<
+  User,
+  UserRegister,
+  { rejectValue: string }
+>("registerUserAsync", async (userData, { rejectWithValue }) => {
+  try {
+    const response = await axios.post(`${baseUrl}/users`, userData);
+    const newUser: User = response.data;
+    return newUser;
+  } catch (e) {
+    const error = e as AxiosError;
+    return rejectWithValue(error.message);
+  }
+});
 
 const userSlice = createSlice({
   name: "users",
@@ -57,14 +99,74 @@ const userSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(loginUserAsync.fulfilled, (state, action) => {
-      return action.payload;
-    });
-    builder.addCase(registerUserAsync.fulfilled, (state, action) => {
-      return action.payload;
-    });
+    builder
+      .addCase(fetchAllUsersAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(fetchAllUsersAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.users = action.payload;
+      })
+      .addCase(fetchAllUsersAsync.rejected, (state, action) => {
+        state.loading = false;
+        if (action.payload) {
+          state.error = action.payload;
+        } else {
+          state.error = "An unknow error occured";
+        }
+      });
+    builder
+      .addCase(loginUserAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(loginUserAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentUser = action.payload;
+      })
+      .addCase(loginUserAsync.rejected, (state, action) => {
+        state.loading = false;
+        if (action.payload) {
+          state.error = action.payload;
+        } else {
+          state.error = "An unknow error occured";
+        }
+      });
+    builder
+      .addCase(authenticateUserAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(authenticateUserAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentUser = action.payload;
+      })
+      .addCase(authenticateUserAsync.rejected, (state, action) => {
+        state.loading = false;
+        if (action.payload) {
+          state.error = action.payload;
+        } else {
+          state.error = "An unknow error occured";
+        }
+      });
+    builder
+      .addCase(registerUserAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(registerUserAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.users.push(action.payload);
+        state.currentUser = action.payload;
+      })
+      .addCase(registerUserAsync.rejected, (state, action) => {
+        state.loading = false;
+        if (action.payload) {
+          state.error = action.payload;
+        } else {
+          state.error = "An unknow error occured";
+        }
+      });
   },
 });
 
 const userReducer = userSlice.reducer;
+export const { logoutUser } = userSlice.actions;
 export default userReducer;

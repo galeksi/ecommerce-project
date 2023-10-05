@@ -1,25 +1,17 @@
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardMedia,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Card, CardMedia, Stack, Typography } from "@mui/material";
 
-import useAppDispatch from "../hooks/useAppDispatch";
+// import useAppDispatch from "../hooks/useAppDispatch";
 import useAppSelector from "../hooks/useAppSelector";
 
 const CartListMobile = () => {
   const cart = useAppSelector((state) => state.cartReducer);
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
   return (
     <Stack sx={{ width: "100%" }}>
       {cart &&
         cart.map((item) => (
-          <Card variant="outlined" sx={{ mb: 2 }}>
+          <Card key={item.product.id} variant="outlined" sx={{ mb: 2 }}>
             <Stack direction="row">
               <CardMedia
                 component="img"

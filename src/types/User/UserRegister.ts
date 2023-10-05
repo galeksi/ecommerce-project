@@ -3,5 +3,5 @@ export interface UserRegister {
   password: string;
   name: string;
   role: "customer";
-  avatar?: string;
+  avatar: string;
 }

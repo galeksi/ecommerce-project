@@ -21,7 +21,11 @@ const ProfilePage = () => {
 
   return (
     <Container sx={{ mt: 10, px: 5 }}>
-      {loading && <div className="loader"></div>}
+      {loading && (
+        <Box sx={{ m: 3 }}>
+          <div className="loader"></div>
+        </Box>
+      )}
       {currentUser && (
         <Grid container spacing={2}>
           <Grid

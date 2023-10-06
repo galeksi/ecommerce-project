@@ -11,9 +11,14 @@ import { useEffect } from "react";
 import useAppDispatch from "./hooks/useAppDispatch";
 import { authenticateUserAsync } from "./redux/reducers/userReducer";
 import { AxiosError } from "axios";
+import Notification from "./components/Notification";
+import useAppSelector from "./hooks/useAppSelector";
 
 const App = () => {
   const dispatch = useAppDispatch();
+  const { message, error } = useAppSelector(
+    (state) => state.notificationReducer
+  );
 
   const checkUser = async () => {
     const token = localStorage.getItem("access_token");
@@ -44,6 +49,7 @@ const App = () => {
           <Route path="/register" element={<Register />} />
         </Routes>
       </Box>
+      {message && <Notification message={message} error={error} />}
       <Footer />
     </Stack>
   );

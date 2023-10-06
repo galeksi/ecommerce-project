@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { AxiosError } from "axios";
 import {
+  Box,
   Container,
   IconButton,
   Paper,
@@ -23,7 +24,7 @@ import {
 } from "../redux/reducers/userReducer";
 
 const AdminPanel = () => {
-  const { users } = useAppSelector((state) => state.userReducer);
+  const { users, loading } = useAppSelector((state) => state.userReducer);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -91,6 +92,11 @@ const AdminPanel = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        {loading && (
+          <Box sx={{ m: 3 }}>
+            <div className="loader"></div>
+          </Box>
+        )}
       </Stack>
     </Container>
   );

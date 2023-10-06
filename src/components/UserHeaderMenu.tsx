@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import useAppDispatch from "../hooks/useAppDispatch";
 import { logoutUser } from "../redux/reducers/userReducer";
+import { addNotification } from "../redux/reducers/notificationReducer";
 
 const UserHeaderMenu = () => {
   const dispatch = useAppDispatch();
@@ -23,6 +24,7 @@ const UserHeaderMenu = () => {
     dispatch(logoutUser());
     localStorage.removeItem("access_token");
     navigate("/");
+    dispatch(addNotification("Logout successfull"));
   };
 
   const navigateToProfile = () => {

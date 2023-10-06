@@ -6,6 +6,10 @@ import { UserRegister } from "../types/User/UserRegister";
 import useAppDispatch from "../hooks/useAppDispatch";
 import { registerUserAsync } from "../redux/reducers/userReducer";
 import { AxiosError } from "axios";
+import {
+  addErrorNotification,
+  addNotification,
+} from "../redux/reducers/notificationReducer";
 
 const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
@@ -14,7 +18,8 @@ const Register = () => {
     password: "",
     name: "",
     role: "customer",
-    avatar: "/assets/Avatar-Placeholder.jpg",
+    avatar:
+      "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png",
   });
 
   const dispatch = useAppDispatch();
@@ -33,9 +38,10 @@ const Register = () => {
     try {
       await dispatch(registerUserAsync(formData));
       navigate("/");
+      dispatch(addNotification(`Welcome ${formData.name}!`));
     } catch (error) {
       const newError = error as AxiosError;
-      console.log(newError.message);
+      dispatch(addErrorNotification(newError.message));
     }
   };
 

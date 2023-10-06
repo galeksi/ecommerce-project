@@ -11,8 +11,12 @@ import {
 import { LoginModalProps } from "../types/components/LoginModalProps";
 import { useNavigate } from "react-router-dom";
 import useAppDispatch from "../hooks/useAppDispatch";
-import { AxiosError } from "axios";
-import { loginUserAsync } from "../redux/reducers/userReducer";
+import { clearUserError, loginUserAsync } from "../redux/reducers/userReducer";
+import {
+  addErrorNotification,
+  addNotification,
+} from "../redux/reducers/notificationReducer";
+import useAppSelector from "../hooks/useAppSelector";
 
 const LoginModal = (props: LoginModalProps) => {
   const { open, onClose } = props;
@@ -20,19 +24,19 @@ const LoginModal = (props: LoginModalProps) => {
   const [password, setPassword] = useState<string>("");
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { error } = useAppSelector((state) => state.userReducer);
 
   const handleLogin = async () => {
-    try {
-      await dispatch(loginUserAsync({ email, password }));
+    await dispatch(loginUserAsync({ email, password }));
+    if (error) {
+      dispatch(addErrorNotification(error));
+      dispatch(clearUserError());
+    } else {
       navigate("/profile");
       onClose();
       setEmail("");
       setPassword("");
-    } catch (error) {
-      const newError = error as AxiosError;
-      console.log(newError.message);
-      setEmail("");
-      setPassword("");
+      dispatch(addNotification("Successfully logged in"));
     }
   };
 

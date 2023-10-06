@@ -112,76 +112,28 @@ const userSlice = createSlice({
     logoutUser: () => {
       return initialState;
     },
+    clearUserError: (state) => {
+      state.error = "";
+    },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchAllUsersAsync.pending, (state, action) => {
-        state.loading = true;
-      })
       .addCase(fetchAllUsersAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.users = action.payload;
-      })
-      .addCase(fetchAllUsersAsync.rejected, (state, action) => {
-        state.loading = false;
-        if (action.payload) {
-          state.error = action.payload;
-        } else {
-          state.error = "An unknow error occured";
-        }
-      });
-    builder
-      .addCase(loginUserAsync.pending, (state, action) => {
-        state.loading = true;
       })
       .addCase(loginUserAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.currentUser = action.payload;
       })
-      .addCase(loginUserAsync.rejected, (state, action) => {
-        state.loading = false;
-        if (action.payload) {
-          state.error = action.payload;
-        } else {
-          state.error = "An unknow error occured";
-        }
-      });
-    builder
-      .addCase(authenticateUserAsync.pending, (state, action) => {
-        state.loading = true;
-      })
       .addCase(authenticateUserAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.currentUser = action.payload;
-      })
-      .addCase(authenticateUserAsync.rejected, (state, action) => {
-        state.loading = false;
-        if (action.payload) {
-          state.error = action.payload;
-        } else {
-          state.error = "An unknow error occured";
-        }
-      });
-    builder
-      .addCase(registerUserAsync.pending, (state, action) => {
-        state.loading = true;
       })
       .addCase(registerUserAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.users.push(action.payload);
         state.currentUser = action.payload;
-      })
-      .addCase(registerUserAsync.rejected, (state, action) => {
-        state.loading = false;
-        if (action.payload) {
-          state.error = action.payload;
-        } else {
-          state.error = "An unknow error occured";
-        }
-      });
-    builder
-      .addCase(deleteUserAsync.pending, (state, action) => {
-        state.loading = true;
       })
       .addCase(deleteUserAsync.fulfilled, (state, action) => {
         state.loading = false;
@@ -189,18 +141,47 @@ const userSlice = createSlice({
           (u) => u.id === action.payload
         );
         state.users.splice(deleteIndex, 1);
+      });
+    builder
+      .addCase(fetchAllUsersAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(loginUserAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(authenticateUserAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(registerUserAsync.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(deleteUserAsync.pending, (state, action) => {
+        state.loading = true;
+      });
+    builder
+      .addCase(fetchAllUsersAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? "An unknow error occured";
+      })
+      .addCase(loginUserAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? "An unknow error occured";
+      })
+      .addCase(authenticateUserAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? "An unknow error occured";
+      })
+      .addCase(registerUserAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? "An unknow error occured";
       })
       .addCase(deleteUserAsync.rejected, (state, action) => {
         state.loading = false;
-        if (action.payload) {
-          state.error = action.payload;
-        } else {
-          state.error = "An unknow error occured";
-        }
+        state.error = action.payload ?? "An unknow error occured";
       });
   },
 });
 
 const userReducer = userSlice.reducer;
-export const { logoutUser } = userSlice.actions;
+export const { logoutUser, clearUserError } = userSlice.actions;
 export default userReducer;

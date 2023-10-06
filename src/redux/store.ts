@@ -1,8 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import productReducer from "./reducers/productReducer";
+import productsReducer from "./reducers/productsReducer";
 import userReducer from "./reducers/userReducer";
 import cartReducer from "./reducers/cartReducer";
+import categoriesReducer from "./reducers/categorysReducer";
+import notificationReducer from "./reducers/notificationReducer";
 import { CartItem } from "../types/Cart/CartItem";
 
 const preCartReducer: CartItem[] = JSON.parse(
@@ -11,9 +13,11 @@ const preCartReducer: CartItem[] = JSON.parse(
 
 const store = configureStore({
   reducer: {
-    productReducer,
+    productsReducer,
     userReducer,
     cartReducer,
+    categoriesReducer,
+    notificationReducer,
   },
   preloadedState: {
     cartReducer: preCartReducer,

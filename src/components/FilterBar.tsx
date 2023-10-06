@@ -1,26 +1,20 @@
 import { Grid, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect } from "react";
 
-import { Category } from "../types/Product/Category";
+import useAppSelector from "../hooks/useAppSelector";
 import useAppDispatch from "../hooks/useAppDispatch";
-import { sortByPrice } from "../redux/reducers/productReducer";
+import { sortByPrice } from "../redux/reducers/productsReducer";
+import { fetchAllCategoriesAsync } from "../redux/reducers/categorysReducer";
 import { FilterBarProps } from "../types/components/FilterBarProps";
 
 const FilterBar = (props: FilterBarProps) => {
-  const [categories, setCategories] = useState<Category[]>([]);
+  const { categories, loading } = useAppSelector(
+    (state) => state.categoriesReducer
+  );
   const dispatch = useAppDispatch();
 
-  const fetchCategories = async () => {
-    const response = await axios.get(
-      "https://api.escuelajs.co/api/v1/categories"
-    );
-    const data: Category[] = response.data;
-    setCategories(data);
-  };
-
   useEffect(() => {
-    fetchCategories();
+    dispatch(fetchAllCategoriesAsync());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -42,11 +36,12 @@ const FilterBar = (props: FilterBarProps) => {
             label="Filter by category"
             onChange={(e) => props.setCategoryFilter(e.target.value)}
           >
-            {categories.map((c) => (
-              <MenuItem key={c.id} value={c.name}>
-                {c.name}
-              </MenuItem>
-            ))}
+            {!loading &&
+              categories.map((c) => (
+                <MenuItem key={c.id} value={c.name}>
+                  {c.name}
+                </MenuItem>
+              ))}
           </Select>
         </FormControl>
       </Grid>

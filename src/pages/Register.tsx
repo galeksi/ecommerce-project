@@ -1,18 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Container, Grid, TextField, Typography } from "@mui/material";
 
 import { UserRegister } from "../types/User/UserRegister";
 import useAppDispatch from "../hooks/useAppDispatch";
-import { registerUserAsync } from "../redux/reducers/userReducer";
-import { AxiosError } from "axios";
+import {
+  clearUserError,
+  registerUserAsync,
+} from "../redux/reducers/userReducer";
 import {
   addErrorNotification,
   addNotification,
 } from "../redux/reducers/notificationReducer";
+import useAppSelector from "../hooks/useAppSelector";
 
 const Register = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const { currentUser, error } = useAppSelector((state) => state.userReducer);
   const [formData, setFormData] = useState<UserRegister>({
     email: "",
     password: "",
@@ -22,8 +28,21 @@ const Register = () => {
       "https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png",
   });
 
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/");
+      dispatch(addNotification(`Welcome ${currentUser.name}!`));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (error) {
+      dispatch(addErrorNotification(error));
+      dispatch(clearUserError());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -35,14 +54,7 @@ const Register = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    try {
-      await dispatch(registerUserAsync(formData));
-      navigate("/");
-      dispatch(addNotification(`Welcome ${formData.name}!`));
-    } catch (error) {
-      const newError = error as AxiosError;
-      dispatch(addErrorNotification(newError.message));
-    }
+    await dispatch(registerUserAsync(formData));
   };
 
   return (

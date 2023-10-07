@@ -1,21 +1,23 @@
+import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
-import Footer from "./components/Footer";
-import Header from "./components/Header";
+import { Box, Stack } from "@mui/material";
+
+import { authenticateUserAsync } from "./redux/reducers/userReducer";
+import { addErrorNotification } from "./redux/reducers/notificationReducer";
+import useAppSelector from "./hooks/useAppSelector";
+import useAppDispatch from "./hooks/useAppDispatch";
 import ProductList from "./pages/ProductList";
 import ProductDetails from "./pages/ProductDetails";
 import Cart from "./pages/Cart";
 import ProfilePage from "./pages/ProfilePage";
 import Register from "./pages/Register";
-import { Box, Stack } from "@mui/material";
-import { useEffect } from "react";
-import useAppDispatch from "./hooks/useAppDispatch";
-import { authenticateUserAsync } from "./redux/reducers/userReducer";
-import { AxiosError } from "axios";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
 import Notification from "./components/Notification";
-import useAppSelector from "./hooks/useAppSelector";
 
 const App = () => {
   const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.userReducer);
   const { message, error } = useAppSelector(
     (state) => state.notificationReducer
   );
@@ -23,12 +25,7 @@ const App = () => {
   const checkUser = async () => {
     const token = localStorage.getItem("access_token");
     if (token) {
-      try {
-        await dispatch(authenticateUserAsync(token));
-      } catch (error) {
-        const newError = error as AxiosError;
-        console.log(newError.message);
-      }
+      await dispatch(authenticateUserAsync(token));
     }
   };
 
@@ -36,6 +33,13 @@ const App = () => {
     checkUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (user.error) {
+      dispatch(addErrorNotification(user.error));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user.error]);
 
   return (
     <Stack sx={{ minHeight: "100vh" }}>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import {
   Box,
   Button,
@@ -14,6 +14,7 @@ import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
 import { Product } from "../types/Product/Product";
 import useAppDispatch from "../hooks/useAppDispatch";
 import { addCart } from "../redux/reducers/cartReducer";
+import { addErrorNotification } from "../redux/reducers/notificationReducer";
 
 const ProductDetails = () => {
   const [product, setProduct] = useState<Product | undefined>();
@@ -21,11 +22,16 @@ const ProductDetails = () => {
   const dispatch = useAppDispatch();
 
   const fetchProduct = async () => {
-    const response = await axios.get(
-      `https://api.escuelajs.co/api/v1/products/${id}`
-    );
-    const data: Product = response.data;
-    setProduct(data);
+    try {
+      const response = await axios.get(
+        `https://api.escuelajs.co/api/v1/products/${id}`
+      );
+      const data: Product = response.data;
+      setProduct(data);
+    } catch (e) {
+      const newError = e as AxiosError;
+      dispatch(addErrorNotification(newError.message));
+    }
   };
 
   useEffect(() => {

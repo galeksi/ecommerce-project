@@ -8,13 +8,15 @@ import ProductItem from "../components/ProductItem";
 import PaginationBar from "../components/PaginationBar";
 import FilterBar from "../components/FilterBar";
 import { paginationLoader } from "../utils/paginationLoader";
+import { addErrorNotification } from "../redux/reducers/notificationReducer";
+import { clearUserError } from "../redux/reducers/userReducer";
 
 const ProductList = () => {
   const [page, setPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(24);
   const [categoryFilter, setCategoryFilter] = useState<string>("");
 
-  const { products, loading } = useAppSelector(
+  const { products, error, loading } = useAppSelector(
     (state) => state.productsReducer
   );
   const dispatch = useAppDispatch();
@@ -23,6 +25,14 @@ const ProductList = () => {
     dispatch(fetchAllProductsAsync());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (error) {
+      dispatch(addErrorNotification(error));
+      dispatch(clearUserError());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
 
   const filterByCategory = () => {
     return products.filter((p) => p.category.name === categoryFilter);

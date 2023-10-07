@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   Dialog,
@@ -24,20 +24,29 @@ const LoginModal = (props: LoginModalProps) => {
   const [password, setPassword] = useState<string>("");
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { error } = useAppSelector((state) => state.userReducer);
+  const { currentUser, error } = useAppSelector((state) => state.userReducer);
 
-  const handleLogin = async () => {
-    await dispatch(loginUserAsync({ email, password }));
-    if (error) {
-      dispatch(addErrorNotification(error));
-      dispatch(clearUserError());
-    } else {
-      navigate("/profile");
+  useEffect(() => {
+    if (currentUser) {
       onClose();
       setEmail("");
       setPassword("");
+      navigate("/profile");
       dispatch(addNotification("Successfully logged in"));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (error) {
+      dispatch(addErrorNotification(error));
+      dispatch(clearUserError());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
+
+  const handleLogin = async () => {
+    await dispatch(loginUserAsync({ email, password }));
   };
 
   const handleRegisterButton = () => {

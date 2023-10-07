@@ -6,9 +6,11 @@ import useAppDispatch from "../hooks/useAppDispatch";
 import { sortByPrice } from "../redux/reducers/productsReducer";
 import { fetchAllCategoriesAsync } from "../redux/reducers/categorysReducer";
 import { FilterBarProps } from "../types/components/FilterBarProps";
+import { addErrorNotification } from "../redux/reducers/notificationReducer";
+import { clearUserError } from "../redux/reducers/userReducer";
 
 const FilterBar = (props: FilterBarProps) => {
-  const { categories, loading } = useAppSelector(
+  const { categories, error, loading } = useAppSelector(
     (state) => state.categoriesReducer
   );
   const dispatch = useAppDispatch();
@@ -17,6 +19,13 @@ const FilterBar = (props: FilterBarProps) => {
     dispatch(fetchAllCategoriesAsync());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (error) {
+      dispatch(addErrorNotification(error));
+      dispatch(clearUserError());
+    }
+  });
 
   const sortProducts = (dir: string) => {
     if (dir === "asc" || dir === "desc") {

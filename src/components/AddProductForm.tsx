@@ -69,7 +69,6 @@ const AddProductForm = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(formData);
     await dispatch(addProductAsync(formData));
   };
 

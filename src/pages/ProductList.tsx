@@ -3,13 +3,15 @@ import { Box, CardMedia, Container, Grid } from "@mui/material";
 
 import useAppDispatch from "../hooks/useAppDispatch";
 import useAppSelector from "../hooks/useAppSelector";
-import { fetchAllProductsAsync } from "../redux/reducers/productsReducer";
+import {
+  clearProductError,
+  fetchAllProductsAsync,
+} from "../redux/reducers/productsReducer";
 import ProductItem from "../components/ProductItem";
 import PaginationBar from "../components/PaginationBar";
 import FilterBar from "../components/FilterBar";
 import { paginationLoader } from "../utils/paginationLoader";
 import { addErrorNotification } from "../redux/reducers/notificationReducer";
-import { clearUserError } from "../redux/reducers/userReducer";
 
 const ProductList = () => {
   const [page, setPage] = useState<number>(1);
@@ -29,7 +31,7 @@ const ProductList = () => {
   useEffect(() => {
     if (error) {
       dispatch(addErrorNotification(error));
-      dispatch(clearUserError());
+      dispatch(clearProductError());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);

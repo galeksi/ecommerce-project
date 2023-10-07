@@ -4,6 +4,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Product } from "../../types/Product/Product";
 import { ProductState } from "../../types/Product/ProductState";
 import { NewProduct } from "../../types/Product/NewProduct";
+import { ProductUpdate } from "../../types/Product/ProductUpdate";
 
 const initialState: ProductState = {
   products: [],
@@ -42,7 +43,7 @@ export const addProductAsync = createAsyncThunk<
 
 export const updateProductAsync = createAsyncThunk<
   Product,
-  Partial<Product>,
+  ProductUpdate,
   { rejectValue: string }
 >("updateProductAsync", async (productUpdate, { rejectWithValue }) => {
   try {

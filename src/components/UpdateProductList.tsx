@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect, useState } from "react";
 import {
   Box,
@@ -18,11 +19,11 @@ import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined
 import useAppDispatch from "../hooks/useAppDispatch";
 import useAppSelector from "../hooks/useAppSelector";
 import {
+  clearProductError,
   deleteProductAsync,
   fetchAllProductsAsync,
 } from "../redux/reducers/productsReducer";
 import { addErrorNotification } from "../redux/reducers/notificationReducer";
-import { clearUserError } from "../redux/reducers/userReducer";
 import UpdateProductForm from "./UpdateProductForm";
 import { ShowUpdateFormState } from "../types/components/ShowUpdateProductFormState";
 
@@ -40,7 +41,7 @@ const UpdateProductList = () => {
   useEffect(() => {
     if (error) {
       dispatch(addErrorNotification(error));
-      dispatch(clearUserError());
+      dispatch(clearProductError());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
@@ -90,9 +91,8 @@ const UpdateProductList = () => {
           <TableBody>
             {productsToShow &&
               productsToShow.map((product) => (
-                <>
+                <React.Fragment key={product.id}>
                   <TableRow
-                    key={product.id}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
                     <TableCell component="th" scope="row">
@@ -121,12 +121,16 @@ const UpdateProductList = () => {
                     </TableCell>
                   </TableRow>
                   {showUpdateForm[product.id] && (
-                    <UpdateProductForm
-                      product={product}
-                      onClose={() => handleUpdateClick(product.id)}
-                    />
+                    <TableRow>
+                      <TableCell colSpan={4}>
+                        <UpdateProductForm
+                          product={product}
+                          onClose={() => handleUpdateClick(product.id)}
+                        />
+                      </TableCell>
+                    </TableRow>
                   )}
-                </>
+                </React.Fragment>
               ))}
           </TableBody>
         </Table>

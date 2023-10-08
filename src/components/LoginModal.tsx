@@ -11,7 +11,11 @@ import {
 import { LoginModalProps } from "../types/components/LoginModalProps";
 import { useNavigate } from "react-router-dom";
 import useAppDispatch from "../hooks/useAppDispatch";
-import { clearUserError, loginUserAsync } from "../redux/reducers/userReducer";
+import {
+  clearUserError,
+  loginUserAsync,
+  clearUserSuccess,
+} from "../redux/reducers/userReducer";
 import {
   addErrorNotification,
   addNotification,
@@ -24,18 +28,19 @@ const LoginModal = (props: LoginModalProps) => {
   const [password, setPassword] = useState<string>("");
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { currentUser, error } = useAppSelector((state) => state.userReducer);
+  const { success, error } = useAppSelector((state) => state.userReducer);
 
   useEffect(() => {
-    if (currentUser) {
+    if (success) {
       onClose();
       setEmail("");
       setPassword("");
       navigate("/profile");
-      dispatch(addNotification("Successfully logged in"));
+      dispatch(addNotification(success));
+      dispatch(clearUserSuccess());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentUser]);
+  }, [success]);
 
   useEffect(() => {
     if (error) {

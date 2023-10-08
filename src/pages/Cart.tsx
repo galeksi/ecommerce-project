@@ -10,8 +10,11 @@ import {
 import CartListDesktop from "../components/CartListDesktop";
 import useAppSelector from "../hooks/useAppSelector";
 import CartListMobile from "../components/CartListMobile";
+import { addNotification } from "../redux/reducers/notificationReducer";
+import useAppDispatch from "../hooks/useAppDispatch";
 
 const Cart = () => {
+  const dispatch = useAppDispatch();
   const cart = useAppSelector((state) => state.cartReducer);
 
   const isSmallScreen = useMediaQuery("(max-width: 749px)");
@@ -46,6 +49,7 @@ const Cart = () => {
             color="secondary"
             sx={buttonStyle}
             disabled={cart.length === 0}
+            onClick={() => dispatch(addNotification("Checked out!"))}
           >
             Checkout
           </Button>

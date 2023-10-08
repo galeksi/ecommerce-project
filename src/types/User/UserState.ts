@@ -5,4 +5,5 @@ export interface UserState {
   currentUser?: User;
   loading: boolean;
   error: string;
+  success: string;
 }

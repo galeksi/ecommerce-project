@@ -16,15 +16,19 @@ import SupervisorAccountOutlinedIcon from "@mui/icons-material/SupervisorAccount
 
 import useAppDispatch from "../hooks/useAppDispatch";
 import useAppSelector from "../hooks/useAppSelector";
-import { addErrorNotification } from "../redux/reducers/notificationReducer";
+import {
+  addErrorNotification,
+  addNotification,
+} from "../redux/reducers/notificationReducer";
 import {
   fetchAllUsersAsync,
   clearUserError,
   deleteUserAsync,
+  clearUserSuccess,
 } from "../redux/reducers/userReducer";
 
 const AdminUserList = () => {
-  const { users, error, loading } = useAppSelector(
+  const { users, error, loading, success } = useAppSelector(
     (state) => state.userReducer
   );
   const dispatch = useAppDispatch();
@@ -33,6 +37,14 @@ const AdminUserList = () => {
     dispatch(fetchAllUsersAsync());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (success) {
+      dispatch(addNotification(success));
+      dispatch(clearUserSuccess());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [success]);
 
   useEffect(() => {
     if (error) {

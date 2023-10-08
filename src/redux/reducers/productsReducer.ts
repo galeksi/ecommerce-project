@@ -10,6 +10,7 @@ const initialState: ProductState = {
   products: [],
   loading: false,
   error: "",
+  success: "",
 };
 const baseUrl = "https://api.escuelajs.co/api/v1/products";
 
@@ -84,6 +85,9 @@ const productSlice = createSlice({
     clearProductError: (state) => {
       state.error = "";
     },
+    clearProductSuccess: (state) => {
+      state.success = "";
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -94,12 +98,14 @@ const productSlice = createSlice({
       .addCase(addProductAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.products.push(action.payload);
+        state.success = `Product ${action.payload.title} was added.`;
       })
       .addCase(updateProductAsync.fulfilled, (state, action) => {
         const updateIndex = state.products.findIndex(
           (p) => p.id === action.payload.id
         );
         state.products[updateIndex] = action.payload;
+        state.success = `Product ${action.payload.title} was updated.`;
       })
       .addCase(deleteProductAsync.fulfilled, (state, action) => {
         if (action.payload !== 0) {
@@ -108,6 +114,7 @@ const productSlice = createSlice({
           );
           state.products.splice(deleteIndex, 1);
         }
+        state.success = `Product (ID: ${action.payload}) was deleted.`;
       });
     builder
       .addCase(fetchAllProductsAsync.pending, (state, action) => {
@@ -143,5 +150,6 @@ const productSlice = createSlice({
 });
 
 const productsReducer = productSlice.reducer;
-export const { sortByPrice, clearProductError } = productSlice.actions;
+export const { sortByPrice, clearProductError, clearProductSuccess } =
+  productSlice.actions;
 export default productsReducer;

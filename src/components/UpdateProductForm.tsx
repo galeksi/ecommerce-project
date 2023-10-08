@@ -15,13 +15,17 @@ import { ProductUpdate } from "../types/Product/ProductUpdate";
 import useAppDispatch from "../hooks/useAppDispatch";
 import {
   clearProductError,
+  clearProductSuccess,
   updateProductAsync,
 } from "../redux/reducers/productsReducer";
-import { addErrorNotification } from "../redux/reducers/notificationReducer";
+import {
+  addErrorNotification,
+  addNotification,
+} from "../redux/reducers/notificationReducer";
 
 const UpdateProductForm = (props: UpdateProductFormProps) => {
   const { product, onClose } = props;
-  const { error } = useAppSelector((state) => state.productsReducer);
+  const { error, success } = useAppSelector((state) => state.productsReducer);
   const { categories } = useAppSelector((state) => state.categoriesReducer);
   const dispatch = useAppDispatch();
   const [title, setTitle] = useState<string>("");
@@ -29,6 +33,14 @@ const UpdateProductForm = (props: UpdateProductFormProps) => {
   const [image, setImage] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+
+  useEffect(() => {
+    if (success) {
+      dispatch(addNotification(success));
+      dispatch(clearProductSuccess());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [success]);
 
   useEffect(() => {
     if (error) {
@@ -57,8 +69,13 @@ const UpdateProductForm = (props: UpdateProductFormProps) => {
       productUpdate.description = description;
     }
 
-    console.log(productUpdate);
     await dispatch(updateProductAsync(productUpdate));
+
+    setTitle("");
+    setPrice("");
+    setImage("");
+    setCategory("");
+    setDescription("");
   };
 
   return (

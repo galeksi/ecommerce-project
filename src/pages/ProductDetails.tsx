@@ -68,6 +68,7 @@ const ProductDetails = () => {
                 >
                   {product.price} €
                 </Typography>
+                <Typography>incl. VAT</Typography>
                 <Typography variant="subtitle1" sx={{ py: 5 }}>
                   {product.description}
                 </Typography>

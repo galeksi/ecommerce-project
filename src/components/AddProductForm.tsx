@@ -11,7 +11,10 @@ import {
 import useAppSelector from "../hooks/useAppSelector";
 import { NewProduct } from "../types/Product/NewProduct";
 import useAppDispatch from "../hooks/useAppDispatch";
-import { addProductAsync } from "../redux/reducers/productsReducer";
+import {
+  addProductAsync,
+  clearProductSuccess,
+} from "../redux/reducers/productsReducer";
 import {
   addNotification,
   addErrorNotification,
@@ -28,21 +31,18 @@ const initialFormData = {
 
 const AddProductForm = () => {
   const dispatch = useAppDispatch();
-  const { products, error } = useAppSelector((state) => state.productsReducer);
+  const { success, error } = useAppSelector((state) => state.productsReducer);
   const { categories } = useAppSelector((state) => state.categoriesReducer);
   const [formData, setFormData] = useState<NewProduct>(initialFormData);
 
   useEffect(() => {
-    if (
-      products &&
-      formData.title &&
-      products[products.length - 1].title === formData.title
-    ) {
-      dispatch(addNotification(`Product: ${formData.title} added!`));
+    if (success) {
+      dispatch(addNotification(success));
+      dispatch(clearProductSuccess());
       setFormData(initialFormData);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [products]);
+  }, [success]);
 
   useEffect(() => {
     if (error) {

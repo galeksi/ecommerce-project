@@ -10,6 +10,7 @@ const initialState: UserState = {
   users: [],
   loading: false,
   error: "",
+  success: "",
 };
 
 const baseUrl = "https://api.escuelajs.co/api/v1";
@@ -115,6 +116,9 @@ const userSlice = createSlice({
     clearUserError: (state) => {
       state.error = "";
     },
+    clearUserSuccess: (state) => {
+      state.success = "";
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -125,6 +129,7 @@ const userSlice = createSlice({
       .addCase(loginUserAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.currentUser = action.payload;
+        state.success = `User ${action.payload.name} login successfull`;
       })
       .addCase(authenticateUserAsync.fulfilled, (state, action) => {
         state.loading = false;
@@ -134,6 +139,7 @@ const userSlice = createSlice({
         state.loading = false;
         state.users.push(action.payload);
         state.currentUser = action.payload;
+        state.success = `Welcome ${action.payload.name}!`;
       })
       .addCase(deleteUserAsync.fulfilled, (state, action) => {
         state.loading = false;
@@ -141,6 +147,7 @@ const userSlice = createSlice({
           (u) => u.id === action.payload
         );
         state.users.splice(deleteIndex, 1);
+        state.success = `User (ID: ${action.payload}) was deleted!`;
       });
     builder
       .addCase(fetchAllUsersAsync.pending, (state, action) => {
@@ -183,5 +190,6 @@ const userSlice = createSlice({
 });
 
 const userReducer = userSlice.reducer;
-export const { logoutUser, clearUserError } = userSlice.actions;
+export const { logoutUser, clearUserError, clearUserSuccess } =
+  userSlice.actions;
 export default userReducer;

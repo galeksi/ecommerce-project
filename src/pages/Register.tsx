@@ -6,6 +6,7 @@ import { UserRegister } from "../types/User/UserRegister";
 import useAppDispatch from "../hooks/useAppDispatch";
 import {
   clearUserError,
+  clearUserSuccess,
   registerUserAsync,
 } from "../redux/reducers/userReducer";
 import {
@@ -18,7 +19,7 @@ const Register = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [confirmPassword, setConfirmPassword] = useState<string>("");
-  const { currentUser, error } = useAppSelector((state) => state.userReducer);
+  const { success, error } = useAppSelector((state) => state.userReducer);
   const [formData, setFormData] = useState<UserRegister>({
     email: "",
     password: "",
@@ -29,12 +30,13 @@ const Register = () => {
   });
 
   useEffect(() => {
-    if (currentUser) {
+    if (success) {
       navigate("/");
-      dispatch(addNotification(`Welcome ${currentUser.name}!`));
+      dispatch(addNotification(success));
+      dispatch(clearUserSuccess());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentUser]);
+  }, [success]);
 
   useEffect(() => {
     if (error) {

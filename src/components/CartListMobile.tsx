@@ -72,6 +72,7 @@ const CartListMobile = () => {
                       size="large"
                       color="inherit"
                       aria-label="reduce-cart-item-button"
+                      disabled={item.amount <= 1 ? true : false}
                       onClick={() => dispatch(reduceCart(item.product))}
                     >
                       <KeyboardArrowLeftIcon />

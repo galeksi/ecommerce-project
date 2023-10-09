@@ -88,6 +88,7 @@ const CartListDesktop = () => {
                     size="large"
                     color="inherit"
                     aria-label="item-delete-button"
+                    disabled={item.amount <= 1 ? true : false}
                     onClick={() => dispatch(deleteCart(item.product.id))}
                   >
                     <DeleteForeverOutlinedIcon />

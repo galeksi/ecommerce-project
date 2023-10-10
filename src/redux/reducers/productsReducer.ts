@@ -101,6 +101,7 @@ const productSlice = createSlice({
         state.success = `Product ${action.payload.title} was added.`;
       })
       .addCase(updateProductAsync.fulfilled, (state, action) => {
+        state.loading = false;
         const updateIndex = state.products.findIndex(
           (p) => p.id === action.payload.id
         );
@@ -108,6 +109,7 @@ const productSlice = createSlice({
         state.success = `Product ${action.payload.title} was updated.`;
       })
       .addCase(deleteProductAsync.fulfilled, (state, action) => {
+        state.loading = false;
         if (action.payload !== 0) {
           const deleteIndex = state.products.findIndex(
             (p) => p.id === action.payload

@@ -10,11 +10,11 @@ import { mockProducts } from "../../mockData/mockProducts";
 
 let cart: CartItem[];
 
-beforeEach(() => {
-  cart = mockCart;
-});
-
 describe("cart reducer", () => {
+  beforeEach(() => {
+    cart = mockCart;
+  });
+
   test("should add one product to cart", () => {
     const newCart = cartReducer(cart, addCart(mockProducts[2]));
 

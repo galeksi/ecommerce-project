@@ -36,6 +36,7 @@ export const loginUserAsync = createAsyncThunk<
 >("loginUserAsync", async (credentials, { rejectWithValue, dispatch }) => {
   try {
     const result = await axios.post(`${baseUrl}/auth/login`, credentials);
+
     const { access_token } = result.data;
 
     const authenticatedResult = await dispatch(
@@ -51,8 +52,6 @@ export const loginUserAsync = createAsyncThunk<
       return authenticatedResult.payload;
     }
   } catch (e) {
-    console.log("error catched");
-
     const error = e as AxiosError;
     return rejectWithValue(error.message);
   }

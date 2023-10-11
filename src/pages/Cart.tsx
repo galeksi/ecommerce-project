@@ -12,15 +12,24 @@ import useAppSelector from "../hooks/useAppSelector";
 import CartListMobile from "../components/CartListMobile";
 import { addNotification } from "../redux/reducers/notificationReducer";
 import useAppDispatch from "../hooks/useAppDispatch";
+import { clearCart } from "../redux/reducers/cartReducer";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const cart = useAppSelector((state) => state.cartReducer);
 
   const isSmallScreen = useMediaQuery("(max-width: 749px)");
 
   const buttonStyle = {
     width: isSmallScreen ? "100%" : 400,
+  };
+
+  const checkout = () => {
+    dispatch(clearCart());
+    dispatch(addNotification("Checked out!"));
+    navigate("/");
   };
 
   return (
@@ -49,7 +58,7 @@ const Cart = () => {
             color="secondary"
             sx={buttonStyle}
             disabled={cart.length === 0}
-            onClick={() => dispatch(addNotification("Checked out!"))}
+            onClick={checkout}
           >
             Checkout
           </Button>

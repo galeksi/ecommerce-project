@@ -3,6 +3,8 @@ import { setupServer } from "msw/node";
 import { mockProducts } from "../mockData/mockProducts";
 import { mockCategories } from "../mockData/mockCategories";
 import { ProductUpdate } from "../../types/Product/ProductUpdate";
+import { mockUsers } from "../mockData/mockUsers";
+import { mockToken } from "../mockData/mockToken";
 
 const baseUrl = "https://api.escuelajs.co/api/v1";
 
@@ -14,6 +16,34 @@ export const handlers = [
   rest.get(`${baseUrl}/products`, (req, res, ctx) => {
     const newProducts = mockProducts.slice(1);
     return res(ctx.json(newProducts));
+  }),
+
+  rest.get(`${baseUrl}/users`, (req, res, ctx) => {
+    return res(ctx.json(mockUsers));
+  }),
+
+  rest.get(`${baseUrl}/auth/profile`, (req, res, ctx) => {
+    const authorization = req.headers.get("Authorization");
+    const token = authorization?.substring(7);
+
+    if (token && token === mockToken) {
+      return res(ctx.json(mockUsers[2]));
+    } else {
+      return res(ctx.status(400));
+    }
+  }),
+
+  rest.post(`${baseUrl}/auth/login`, async (req, res, ctx) => {
+    let credentials = await req.json();
+
+    if (
+      credentials.email === mockUsers[2].email &&
+      credentials.password === mockUsers[2].password
+    ) {
+      return res(ctx.json({ access_token: mockToken }));
+    } else {
+      return res(ctx.status(400));
+    }
   }),
 
   rest.post(`${baseUrl}/products`, async (req, res, ctx) => {

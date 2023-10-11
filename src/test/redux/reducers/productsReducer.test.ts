@@ -100,8 +100,6 @@ describe("Product reducer", () => {
       description: "Test update product description",
     };
     const result = await store.dispatch(updateProductAsync(updateProduct));
-    console.log(result.payload);
-
     const stateAfter = store.getState().productsReducer;
 
     expect(stateAfter.products).toHaveLength(3);

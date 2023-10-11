@@ -1,5 +1,6 @@
 import cartReducer, {
   addCart,
+  clearCart,
   deleteCart,
   reduceCart,
   updateCart,
@@ -22,6 +23,12 @@ describe("cart reducer", () => {
     expect(newCart).toHaveLength(3);
     expect(newCart[2].product).toBe(mockProducts[2]);
     expect(newCart[2].amount).toBe(1);
+  });
+
+  test("should clear whole cart", () => {
+    const newCart = cartReducer(cart, clearCart());
+
+    expect(newCart).toHaveLength(0);
   });
 
   test("should only increase amount for same product", () => {

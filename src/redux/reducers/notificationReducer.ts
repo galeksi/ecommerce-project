@@ -13,6 +13,7 @@ const notificationSlice = createSlice({
   reducers: {
     addNotification: (state, action: PayloadAction<string>) => {
       state.message = action.payload;
+      state.error = false;
     },
     addErrorNotification: (state, action: PayloadAction<string>) => {
       state.message = action.payload;

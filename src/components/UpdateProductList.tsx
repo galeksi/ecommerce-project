@@ -13,7 +13,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 
 import useAppDispatch from "../hooks/useAppDispatch";
@@ -106,7 +106,7 @@ const UpdateProductList = () => {
                         aria-label="item-updatebutton"
                         onClick={() => handleUpdateClick(product.id)}
                       >
-                        <SettingsOutlinedIcon />
+                        <CreateOutlinedIcon />
                       </IconButton>
                     </TableCell>
                     <TableCell align="center">

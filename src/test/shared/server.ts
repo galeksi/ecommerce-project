@@ -46,6 +46,24 @@ export const handlers = [
     }
   }),
 
+  rest.post(`${baseUrl}/users`, async (req, res, ctx) => {
+    let newUser = await req.json();
+
+    if (
+      typeof newUser === "object" &&
+      "email" in newUser &&
+      "password" in newUser &&
+      "name" in newUser &&
+      "role" in newUser &&
+      "avatar" in newUser
+    ) {
+      newUser.id = 4;
+      return res(ctx.json(newUser));
+    } else {
+      return res(ctx.status(400));
+    }
+  }),
+
   rest.post(`${baseUrl}/products`, async (req, res, ctx) => {
     let newProduct = await req.json();
     newProduct.id = 4;
@@ -79,6 +97,16 @@ export const handlers = [
     const { id } = req.params;
 
     if (mockProducts.find((p) => p.id === Number(id))) {
+      return res(ctx.json(true));
+    } else {
+      return res(ctx.status(400));
+    }
+  }),
+
+  rest.delete(`${baseUrl}/users/:id`, (req, res, ctx) => {
+    const { id } = req.params;
+
+    if (mockUsers.find((u) => u.id === Number(id))) {
       return res(ctx.json(true));
     } else {
       return res(ctx.status(400));

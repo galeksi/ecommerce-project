@@ -31,10 +31,10 @@ No .env file or further config needed.
 
 #### Scripts:
 
-- #### npm start: start dev server
-- #### npm test: run all tests
-- #### npm run build: create production build
-- #### npm run eject: Remove single build dependency from project
+- `npm start`: start dev server
+- `npm test`: run all tests
+- `npm run build`: create production build
+- `npm run eject`: Remove single build dependency from project
 
 
 #### Features:
@@ -57,9 +57,34 @@ State in managed globally with a redux-toolkit store with its reducers/slices in
 - Register page
 - Profile page
 
+```
+.
+├── public
+├── src
+│   ├── components
+│   ├── hooks
+│   ├── pages
+│   ├── redux
+│   ├── test
+│   ├── types
+│   ├── utils
+│   ├── App.tsx
+│   ├── index.scss
+│   ├── index.tsx
+│   ├── react-app-env.d.ts
+│   ├── reportWebVitals.ts
+│   └── setupTests.ts
+├── Features.jpg
+├── Horizontal-Structure.jpg
+├── package-lock.json
+├── package.json
+├── README.md
+└── tsconfig.json
+```
+
 ## Testing:
 
-#### Run all tests with: npm test
+`npm test`: run all tests 
 
 Testing is done wit build in Jest testing library. Testing includes unit testing for all five reducers (Prosucts, Users, Categories, Cart and Notifications) and their operations. All server requests in the tests are handeled with a mock server (msw).
 

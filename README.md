@@ -30,17 +30,19 @@ No .env file or further config needed.
 
 Scripts:
 
-### npm start: start dev server
-### npm test: run all tests
-### npm run build: create production build
-### npm run eject: Remove single build dependency from project
+#### npm start: start dev server
+#### npm test: run all tests
+#### npm run build: create production build
+#### npm run eject: Remove single build dependency from project
 
-Features:
+#### Features:
+
 ![Features](Features.jpg)
 
 ## Architecture & Design:
 
-The project follows a horizontal arcitecture:
+#### The project follows a horizontal arcitecture:
+
 ![Structure](Horizontal-structure.jpg)
 
 State in managed globally with a redux-toolkit store with its reducers/slices in folder "redux". There are five main pages handled with react-router:

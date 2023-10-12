@@ -4,6 +4,7 @@
 
 A frontend ecommerce project providing a basic webshop experience with the use of a public API endpoint [https://fakeapi.platzi.com/](https://fakeapi.platzi.com/).
 The project provides CRUD operations for Products, Users, Categories as well as fileuploads and authentification.
+The project is build with create-react-app and Typescript using Redux toolkit for statemanagement. Additional external libraries to mention are react-router for routing, axios for fetching and Material-UI for styling.
 
 ## Table of Content:
 
@@ -17,6 +18,10 @@ The project provides CRUD operations for Products, Users, Categories as well as 
 
 ## Getting Started:
 
+Clone the repo with git clone git@github.com:galeksi/ecommerce-project.git
+Install all dependencies with npm or yarn install.
+No .env file or further config needed.
+
 ## Usage:
 
 Scripts:
@@ -25,7 +30,21 @@ npm test: run all tests
 npm run build: create production build
 npm run eject: Remove single build dependency from project
 
+Features:
+![Features](Features.jpg)
+
 ## Architecture & Design:
+
+The project follows a horizontal arcitecture:
+![Structure](Horizontal-structure.jpg)
+
+State in managed globally with a redux-toolkit store with its reducers/slices in folder "redux". There are five main pages handled with react-router:
+
+- Homepage/ProductList
+- ProductDetail page
+- Cart
+- Register page
+- Profile page
 
 .
 ├── public

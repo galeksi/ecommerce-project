@@ -28,7 +28,8 @@ No .env file or further config needed.
 
 ## Usage:
 
-Scripts:
+
+#### Scripts:
 
 - #### npm start: start dev server
 - #### npm test: run all tests
@@ -44,6 +45,7 @@ Scripts:
 #### The project follows a horizontal arcitecture:
 
 ![Structure](Horizontal-structure.jpg)
+
 
 State in managed globally with a redux-toolkit store with its reducers/slices in folder "redux". There are five main pages handled with react-router:
 

@@ -22,7 +22,7 @@ The project is build with create-react-app and Typescript using Redux toolkit fo
 
 Clone the repo with git clone git@github.com:galeksi/ecommerce-project.git
 
-Install all dependencies with npm or yarn install.
+Install all dependencies with `npm intstall`  or `yarn install`.
 
 No .env file or further config needed.
 

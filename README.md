@@ -36,11 +36,13 @@ No .env file or further config needed.
 - #### npm run build: create production build
 - #### npm run eject: Remove single build dependency from project
 
+
 #### Features:
 
 ![Features](Features.jpg)
 
 ## Architecture & Design:
+
 
 #### The project follows a horizontal arcitecture:
 
@@ -56,27 +58,92 @@ State in managed globally with a redux-toolkit store with its reducers/slices in
 - Profile page
 
 .
-├── public
-├── src
+├── App.tsx
+├── components
+│   ├── AddProductForm.tsx
+│   ├── AdminPanel.tsx
+│   ├── AdminUserList.tsx
+│   ├── CartListDesktop.tsx
+│   ├── CartListMobile.tsx
+│   ├── FilterBar.tsx
+│   ├── Footer.tsx
+│   ├── Header.tsx
+│   ├── HideOnScroll.tsx
+│   ├── LoginModal.tsx
+│   ├── Notification.tsx
+│   ├── PaginationBar.tsx
+│   ├── ProductItem.tsx
+│   ├── UpdateProductForm.tsx
+│   ├── UpdateProductList.tsx
+│   └── UserHeaderMenu.tsx
+├── hooks
+│   ├── useAppDispatch.ts
+│   └── useAppSelector.ts
+├── index.scss
+├── index.tsx
+├── pages
+│   ├── Cart.tsx
+│   ├── ProductDetails.tsx
+│   ├── ProductList.tsx
+│   ├── ProfilePage.tsx
+│   └── Register.tsx
+├── react-app-env.d.ts
+├── redux
+│   ├── reducers
+│   │   ├── cartReducer.ts
+│   │   ├── categorysReducer.ts
+│   │   ├── notificationReducer.ts
+│   │   ├── productsReducer.ts
+│   │   └── userReducer.ts
+│   └── store.ts
+├── reportWebVitals.ts
+├── setupTests.ts
+├── test
 │   ├── components
-│   ├── hooks
-│   ├── pages
+│   ├── mockData
+│   │   ├── mockCart.ts
+│   │   ├── mockCategories.ts
+│   │   ├── mockProducts.ts
+│   │   ├── mockToken.ts
+│   │   └── mockUsers.ts
 │   ├── redux
-│   ├── test
-│   ├── types
-│   ├── utils
-│   ├── App.tsx
-│   ├── index.scss
-│   ├── index.tsx
-│   ├── react-app-env.d.ts
-│   ├── reportWebVitals.ts
-│   └── setupTests.ts
-├── Features.jpg
-├── Horizontal-Structure.jpg
-├── package-lock.json
-├── package.json
-├── README.md
-└── tsconfig.json
+│   │   └── reducers
+│   │       ├── cartReducer.test.ts
+│   │       ├── categoryReducer.test.ts
+│   │       ├── notificationReducer.test.ts
+│   │       ├── productsReducer.test.ts
+│   │       └── userReducer.test.ts
+│   ├── shared
+│   │   └── server.ts
+│   └── teardown.js
+├── types
+│   ├── Cart
+│   │   └── CartItem.ts
+│   ├── Category
+│   │   ├── CategoryState.ts
+│   │   └── Category.ts
+│   ├── components
+│   │   ├── FilterBarProps.ts
+│   │   ├── HideOnScrollProps.ts
+│   │   ├── LoginModalProps.ts
+│   │   ├── Notification.ts
+│   │   ├── PaginationBarProps.ts
+│   │   ├── ProductItemProps.ts
+│   │   ├── ShowUpdateProductFormState.ts
+│   │   └── UpdateProductFormProps.ts
+│   ├── Product
+│   │   ├── NewProduct.ts
+│   │   ├── ProductState.ts
+│   │   ├── Product.ts
+│   │   └── ProductUpdate.ts
+│   └── User
+│       ├── Credentials.ts
+│       ├── UserRegister.ts
+│       ├── UserState.ts
+│       └── User.ts
+└── utils
+    ├── invoiceTotal.ts
+    └── paginationLoader.ts
 
 ## Testing:
 

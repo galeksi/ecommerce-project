@@ -48,7 +48,9 @@ const Header = () => {
             to="/"
             style={{ textDecoration: "none", color: "inherit", flexGrow: 1 }}
           >
-            <Typography variant="h6">Products</Typography>
+            <Typography variant="h2" fontSize={30}>
+              Homeshop
+            </Typography>
           </Link>
           {currentUser ? (
             <UserHeaderMenu />

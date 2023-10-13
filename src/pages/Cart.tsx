@@ -55,7 +55,7 @@ const Cart = () => {
         <Stack alignItems="end" sx={{ py: 3 }}>
           <Button
             variant="contained"
-            color="secondary"
+            color="primary"
             sx={buttonStyle}
             disabled={cart.length === 0}
             onClick={checkout}

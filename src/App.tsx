@@ -44,7 +44,7 @@ const App = () => {
   return (
     <Stack sx={{ minHeight: "100vh" }}>
       <Header />
-      <Box sx={{ alignItems: "flex-start", mt: 7 }}>
+      <Box sx={{ alignItems: "flex-start", my: 7 }}>
         <Routes>
           <Route path="/" element={<ProductList />} />
           <Route path=":id" element={<ProductDetails />} />

@@ -12,6 +12,7 @@ import { ProductItemProps } from "../types/components/ProductItemProps";
 import { Link } from "react-router-dom";
 import useAppDispatch from "../hooks/useAppDispatch";
 import { addCart } from "../redux/reducers/cartReducer";
+import theme from "../theme";
 
 const ProductItem = (props: ProductItemProps) => {
   const dispatch = useAppDispatch();
@@ -23,12 +24,15 @@ const ProductItem = (props: ProductItemProps) => {
         size="large"
         aria-label="Add to Cart"
         onClick={() => dispatch(addCart(product))}
+        color="inherit"
         sx={{
           position: "absolute",
           top: 10,
           right: 10,
-          color: "#3f50b5",
-          backgroundColor: "white",
+          backgroundColor: theme.palette.primary.main,
+          "&:hover": {
+            backgroundColor: theme.palette.primary.dark,
+          },
         }}
       >
         <AddShoppingCartIcon />
@@ -42,10 +46,13 @@ const ProductItem = (props: ProductItemProps) => {
             alt="market"
           />
           <CardContent>
-            <Typography variant="h6" sx={{ fontWeight: "bold", minHeight: 80 }}>
+            <Typography variant="h6" sx={{ minHeight: 60 }}>
               {product.title}
             </Typography>
-            <Typography variant="h5">Price: {product.price} €</Typography>
+            <Typography variant="h5" textAlign="right" fontWeight="bold">
+              {product.price} €
+            </Typography>
+            <Typography textAlign="right">incl. VAT</Typography>
           </CardContent>
         </Card>
       </Link>

@@ -1,15 +1,6 @@
 body {
+  background-color: #f5f5f5;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
 }
 
 .loader {
@@ -20,7 +11,7 @@ code {
   mask: var(--_g), var(--_g), var(--_g);
   -webkit-mask-size: 25% 40%;
   mask-size: 25% 40%;
-  background: #3f50b5;
+  background: #35e9d1;
   animation: load 2s infinite;
   margin: auto;
 }

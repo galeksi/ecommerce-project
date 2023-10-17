@@ -6,7 +6,14 @@ import {
   Button,
   MenuItem,
   InputAdornment,
+  Stack,
+  CardMedia,
+  Input,
+  InputLabel,
+  IconButton,
 } from "@mui/material";
+import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 
 import useAppSelector from "../hooks/useAppSelector";
 import { NewProduct } from "../types/Product/NewProduct";
@@ -20,13 +27,15 @@ import {
   addErrorNotification,
 } from "../redux/reducers/notificationReducer";
 import { clearUserError } from "../redux/reducers/userReducer";
+import axios, { AxiosError } from "axios";
+import theme from "../theme";
 
 const initialFormData = {
   title: "",
   price: 0,
   description: "",
   categoryId: 1,
-  images: [""],
+  images: [],
 };
 
 const AddProductForm = () => {
@@ -34,12 +43,14 @@ const AddProductForm = () => {
   const { success, error } = useAppSelector((state) => state.productsReducer);
   const { categories } = useAppSelector((state) => state.categoriesReducer);
   const [formData, setFormData] = useState<NewProduct>(initialFormData);
+  const [allImages, setAllImages] = useState<string[]>([]);
 
   useEffect(() => {
     if (success) {
       dispatch(addNotification(success));
       dispatch(clearProductSuccess());
       setFormData(initialFormData);
+      setAllImages([]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [success]);
@@ -54,29 +65,57 @@ const AddProductForm = () => {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    if (name === "images") {
-      setFormData({
-        ...formData,
-        images: [value],
-      });
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const removeImage = (url: string) => {
+    const updatedImages = allImages.filter((i) => i !== url);
+    setAllImages(updatedImages);
+  };
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (event.target.files) {
+      const selectedFile = event.target.files[0];
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+
+      try {
+        const response = await axios.post(
+          "https://api.escuelajs.co/api/v1/files/upload",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        setAllImages((prevArray) => [...prevArray, response.data.location]);
+      } catch (e) {
+        const error = e as AxiosError;
+        dispatch(addErrorNotification(error.message));
+      }
     } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
+      dispatch(addErrorNotification("Incorrect file added"));
     }
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await dispatch(addProductAsync(formData));
+    const completeFormData = { ...formData, images: allImages };
+    await dispatch(addProductAsync(completeFormData));
   };
 
   return (
-    <Box sx={{ mb: 3 }}>
+    <Box sx={{ mb: 5 }}>
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={4}>
             <TextField
               required
               fullWidth
@@ -86,7 +125,7 @@ const AddProductForm = () => {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={4}>
             <TextField
               required
               fullWidth
@@ -106,17 +145,7 @@ const AddProductForm = () => {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              required
-              fullWidth
-              label="Image"
-              name="images"
-              value={formData.images[0]}
-              onChange={handleChange}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={4}>
             <TextField
               select
               required
@@ -145,6 +174,63 @@ const AddProductForm = () => {
               value={formData.description}
               onChange={handleChange}
             />
+          </Grid>
+          <Grid item xs={12}>
+            <Stack direction="row">
+              <InputLabel htmlFor="file-upload">
+                <Input
+                  id="file-upload"
+                  type="file"
+                  style={{ display: "none" }}
+                  onChange={handleFileChange}
+                />
+                <Button
+                  variant="outlined"
+                  component="label"
+                  htmlFor="file-upload"
+                  startIcon={<CloudUploadOutlinedIcon />}
+                >
+                  Upload File
+                </Button>
+              </InputLabel>
+            </Stack>
+          </Grid>
+          <Grid item xs={12}>
+            <Stack direction="row" sx={{ my: 2 }}>
+              {allImages &&
+                allImages.map((image, index) => (
+                  <Box key={index} sx={{ position: "relative" }}>
+                    <IconButton
+                      size="small"
+                      aria-label="Remove image"
+                      onClick={() => removeImage(image)}
+                      color="inherit"
+                      sx={{
+                        position: "absolute",
+                        top: -5,
+                        right: 5,
+                        backgroundColor: theme.palette.primary.main,
+                        "&:hover": {
+                          backgroundColor: theme.palette.primary.dark,
+                        },
+                      }}
+                    >
+                      <CancelOutlinedIcon />
+                    </IconButton>
+                    <CardMedia
+                      component="img"
+                      image={image}
+                      alt="image URL"
+                      sx={{
+                        height: 100,
+                        width: 100,
+                        borderRadius: 50,
+                        marginRight: 2,
+                      }}
+                    />
+                  </Box>
+                ))}
+            </Stack>
           </Grid>
           <Grid item xs={12}>
             <Button

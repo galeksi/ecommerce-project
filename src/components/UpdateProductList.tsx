@@ -67,8 +67,14 @@ const UpdateProductList = () => {
 
   return (
     <>
-      <Box sx={{ display: "flex", alignItems: "center" }}>
-        <Typography variant="h4" sx={{ my: 2, pr: 2 }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "baseline",
+          justifyContent: "space-between",
+        }}
+      >
+        <Typography variant="h4" sx={{ mt: 5, mb: 2, pr: 2 }}>
           Update product:
         </Typography>
         <TextField

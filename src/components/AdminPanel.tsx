@@ -16,9 +16,6 @@ const AdminPanel = () => {
         </Typography>
         <AddProductForm />
         <UpdateProductList />
-        <Typography variant="h4" sx={{ my: 2 }}>
-          Users:
-        </Typography>
         <AdminUserList />
       </Stack>
     </Container>

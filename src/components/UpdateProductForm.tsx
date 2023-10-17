@@ -7,7 +7,14 @@ import {
   MenuItem,
   Button,
   Typography,
+  Stack,
+  IconButton,
+  CardMedia,
+  Input,
+  InputLabel,
 } from "@mui/material";
+import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 
 import { UpdateProductFormProps } from "../types/components/UpdateProductFormProps";
 import useAppSelector from "../hooks/useAppSelector";
@@ -22,6 +29,8 @@ import {
   addErrorNotification,
   addNotification,
 } from "../redux/reducers/notificationReducer";
+import theme from "../theme";
+import axios, { AxiosError } from "axios";
 
 const UpdateProductForm = (props: UpdateProductFormProps) => {
   const { product, onClose } = props;
@@ -30,9 +39,16 @@ const UpdateProductForm = (props: UpdateProductFormProps) => {
   const dispatch = useAppDispatch();
   const [title, setTitle] = useState<string>("");
   const [price, setPrice] = useState<string>("");
-  const [image, setImage] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const [allImages, setAllImages] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (product) {
+      setAllImages(product.images);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product]);
 
   useEffect(() => {
     if (success) {
@@ -52,15 +68,12 @@ const UpdateProductForm = (props: UpdateProductFormProps) => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const productUpdate: ProductUpdate = { id: product.id };
+    const productUpdate: ProductUpdate = { id: product.id, images: allImages };
     if (title) {
       productUpdate.title = title;
     }
     if (price) {
       productUpdate.price = Number(price);
-    }
-    if (image) {
-      productUpdate.images = [image];
     }
     if (category) {
       productUpdate.categoryId = Number(category);
@@ -73,16 +86,49 @@ const UpdateProductForm = (props: UpdateProductFormProps) => {
 
     setTitle("");
     setPrice("");
-    setImage("");
     setCategory("");
     setDescription("");
+  };
+
+  const removeImage = (url: string) => {
+    const updatedImages = allImages.filter((i) => i !== url);
+    setAllImages(updatedImages);
+  };
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (event.target.files) {
+      const selectedFile = event.target.files[0];
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+
+      try {
+        const response = await axios.post(
+          "https://api.escuelajs.co/api/v1/files/upload",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        setAllImages((prevArray) => [...prevArray, response.data.location]);
+      } catch (e) {
+        const error = e as AxiosError;
+        dispatch(addErrorNotification(error.message));
+      }
+    } else {
+      dispatch(addErrorNotification("Incorrect file added"));
+    }
   };
 
   return (
     <Box sx={{ mb: 3, width: "100%" }}>
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={4}>
             <Typography sx={{ py: 2 }}>{product.title}</Typography>
             <TextField
               fullWidth
@@ -92,10 +138,9 @@ const UpdateProductForm = (props: UpdateProductFormProps) => {
               onChange={(e) => setTitle(e.target.value)}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={4}>
             <Typography sx={{ py: 2 }}>{product.price}</Typography>
             <TextField
-              required
               fullWidth
               type="number"
               label="Price in EUR"
@@ -113,22 +158,10 @@ const UpdateProductForm = (props: UpdateProductFormProps) => {
               onChange={(e) => setPrice(e.target.value)}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <Typography sx={{ py: 2 }}>Add image:</Typography>
-            <TextField
-              required
-              fullWidth
-              label="Image URL"
-              name="image"
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={4}>
             <Typography sx={{ py: 2 }}>{product.category.name}</Typography>
             <TextField
               select
-              required
               fullWidth
               label="Category"
               name="categoryId"
@@ -146,7 +179,6 @@ const UpdateProductForm = (props: UpdateProductFormProps) => {
           <Grid item xs={12}>
             <Typography sx={{ py: 2 }}>{product.description}</Typography>
             <TextField
-              required
               multiline
               rows={5}
               fullWidth
@@ -155,6 +187,63 @@ const UpdateProductForm = (props: UpdateProductFormProps) => {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
+          </Grid>
+          <Grid item xs={12}>
+            <Stack direction="row">
+              <InputLabel htmlFor="update-file-upload">
+                <Input
+                  id="update-file-upload"
+                  type="file"
+                  style={{ display: "none" }}
+                  onChange={handleFileChange}
+                />
+                <Button
+                  variant="outlined"
+                  component="label"
+                  htmlFor="update-file-upload"
+                  startIcon={<CloudUploadOutlinedIcon />}
+                >
+                  Upload Image
+                </Button>
+              </InputLabel>
+            </Stack>
+          </Grid>
+          <Grid item xs={12}>
+            <Stack direction="row" sx={{ my: 2 }}>
+              {allImages &&
+                allImages.map((image, index) => (
+                  <Box key={index} sx={{ position: "relative" }}>
+                    <IconButton
+                      size="small"
+                      aria-label="Remove image"
+                      onClick={() => removeImage(image)}
+                      color="inherit"
+                      sx={{
+                        position: "absolute",
+                        top: -5,
+                        right: 5,
+                        backgroundColor: theme.palette.primary.main,
+                        "&:hover": {
+                          backgroundColor: theme.palette.primary.dark,
+                        },
+                      }}
+                    >
+                      <CancelOutlinedIcon />
+                    </IconButton>
+                    <CardMedia
+                      component="img"
+                      image={image}
+                      alt="image URL"
+                      sx={{
+                        height: 100,
+                        width: 100,
+                        borderRadius: 50,
+                        marginRight: 2,
+                      }}
+                    />
+                  </Box>
+                ))}
+            </Stack>
           </Grid>
           <Grid item xs={12} sm={6}>
             <Button

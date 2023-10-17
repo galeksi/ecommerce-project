@@ -7,6 +7,7 @@ import {
   CardMedia,
   Container,
   Grid,
+  Stack,
   Typography,
 } from "@mui/material";
 import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
@@ -18,6 +19,7 @@ import { addErrorNotification } from "../redux/reducers/notificationReducer";
 
 const ProductDetails = () => {
   const [product, setProduct] = useState<Product | undefined>();
+  const [imageIndex, setImageIndex] = useState<number>(0);
   const id = useParams().id;
   const dispatch = useAppDispatch();
 
@@ -50,12 +52,32 @@ const ProductDetails = () => {
           </Link>
           <Grid container spacing={5}>
             <Grid item sm={12} md={6}>
-              <CardMedia
-                component="img"
-                height="600"
-                image={product.images[0]}
-                alt="market"
-              />
+              <Stack>
+                <CardMedia
+                  component="img"
+                  height="500"
+                  image={product.images[imageIndex]}
+                  alt="large product image"
+                />
+                <Stack direction="row">
+                  {product.images.length > 1 &&
+                    product.images.map((image, index) => (
+                      <Box
+                        key={index}
+                        onClick={() => setImageIndex(index)}
+                        sx={{ cursor: "pointer" }}
+                      >
+                        <CardMedia
+                          component="img"
+                          height="100"
+                          image={image}
+                          alt="small product image"
+                          sx={{ mt: 2, mr: 2, width: 100 }}
+                        />
+                      </Box>
+                    ))}
+                </Stack>
+              </Stack>
             </Grid>
             <Grid item sm={12} md={6}>
               <Box>

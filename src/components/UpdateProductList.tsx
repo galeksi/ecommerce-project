@@ -46,13 +46,13 @@ const UpdateProductList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const deleteProduct = async (id: number, title: string) => {
+  const deleteProduct = async (id: string, title: string) => {
     if (window.confirm(`Do you want to delete ${title}?`)) {
       await dispatch(deleteProductAsync(id));
     }
   };
 
-  const handleUpdateClick = (productId: number) => {
+  const handleUpdateClick = (productId: string) => {
     setShowUpdateForm((prevState) => ({
       ...prevState,
       [productId]: !prevState[productId],

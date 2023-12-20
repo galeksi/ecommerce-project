@@ -26,7 +26,7 @@ const ProductDetails = () => {
   const fetchProduct = async () => {
     try {
       const response = await axios.get(
-        `https://api.escuelajs.co/api/v1/products/${id}`
+        `http://127.0.0.1:5046/api/v1/products/${id}`
       );
       const data: Product = response.data;
       setProduct(data);
@@ -56,7 +56,7 @@ const ProductDetails = () => {
                 <CardMedia
                   component="img"
                   height="500"
-                  image={product.images[imageIndex]}
+                  image={product.images[imageIndex].url}
                   alt="large product image"
                 />
                 <Stack direction="row">
@@ -70,7 +70,7 @@ const ProductDetails = () => {
                         <CardMedia
                           component="img"
                           height="100"
-                          image={image}
+                          image={image.url}
                           alt="small product image"
                           sx={{ mt: 2, mr: 2, width: 100 }}
                         />

@@ -1,3 +1,3 @@
 export interface ShowUpdateFormState {
-  [productId: number]: boolean;
+  [productId: string]: boolean;
 }

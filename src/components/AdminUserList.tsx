@@ -31,13 +31,15 @@ import {
 
 const AdminUserList = () => {
   const [userFilter, setUserFilter] = useState<string>("");
-  const { users, error, loading, success } = useAppSelector(
+  const { currentUser, users, error, loading, success } = useAppSelector(
     (state) => state.userReducer
   );
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(fetchAllUsersAsync());
+    if (currentUser) {
+      dispatch(fetchAllUsersAsync(currentUser.token));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -57,7 +59,7 @@ const AdminUserList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  const deleteUser = async (id: number, name: string) => {
+  const deleteUser = async (id: string, name: string) => {
     if (window.confirm(`Do you want to delete ${name}?`)) {
       await dispatch(deleteUserAsync(id));
     }
@@ -109,7 +111,7 @@ const AdminUserList = () => {
                     {user.id}
                   </TableCell>
                   <TableCell align="left">
-                    {user.role === "admin" ? (
+                    {user.role === "Admin" ? (
                       <AdminPanelSettingsOutlinedIcon />
                     ) : (
                       <SupervisorAccountOutlinedIcon />

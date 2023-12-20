@@ -48,7 +48,7 @@ const CartListDesktop = () => {
                 <TableCell component="th" scope="row">
                   <CardMedia
                     component="img"
-                    image={item.product.images[0]}
+                    image={item.product.images[0].url}
                     alt={`${item.product.title}-image`}
                     style={{ height: 100, width: 100 }}
                   />

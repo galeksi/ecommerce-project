@@ -34,7 +34,7 @@ const CartListMobile = () => {
               <CardMedia
                 component="img"
                 sx={{ height: 150, width: 150, m: 2 }}
-                image={item.product.images[0]}
+                image={item.product.images[0].url}
                 alt="market"
               />
               <Stack width="100%" sx={{ m: 2 }}>

@@ -5,22 +5,25 @@ import { Product } from "../../types/Product/Product";
 import { ProductState } from "../../types/Product/ProductState";
 import { NewProduct } from "../../types/Product/NewProduct";
 import { ProductUpdate } from "../../types/Product/ProductUpdate";
+import { ProductQuery } from "../../types/Product/ProductQuery";
 
 const initialState: ProductState = {
   products: [],
+  productCount: 0,
   loading: false,
   error: "",
   success: "",
 };
 const baseUrl = "https://api.escuelajs.co/api/v1/products";
+const newUrl = "http://localhost:5046/api/v1/products";
 
 export const fetchAllProductsAsync = createAsyncThunk<
-  Product[],
+  ProductQuery,
   void,
   { rejectValue: string }
 >("fetchAllProductsAsync", async (_, { rejectWithValue }) => {
   try {
-    const response = await axios.get(baseUrl);
+    const response = await axios.get(newUrl);
     return response.data;
   } catch (e) {
     const error = e as AxiosError;
@@ -58,13 +61,13 @@ export const updateProductAsync = createAsyncThunk<
 });
 
 export const deleteProductAsync = createAsyncThunk<
-  number,
-  number,
+  string,
+  string,
   { rejectValue: string }
 >("deleteProductAsync", async (id, { rejectWithValue }) => {
   try {
     const response = await axios.delete(`${baseUrl}/${id}`);
-    return response.data === true ? id : 0;
+    return response.data === true ? id : "";
   } catch (e) {
     const error = e as AxiosError;
     return rejectWithValue(error.message);
@@ -93,7 +96,8 @@ const productSlice = createSlice({
     builder
       .addCase(fetchAllProductsAsync.fulfilled, (state, action) => {
         state.loading = false;
-        state.products = action.payload;
+        state.products = action.payload.data;
+        state.productCount = action.payload.totalCount;
       })
       .addCase(addProductAsync.fulfilled, (state, action) => {
         state.loading = false;
@@ -110,7 +114,7 @@ const productSlice = createSlice({
       })
       .addCase(deleteProductAsync.fulfilled, (state, action) => {
         state.loading = false;
-        if (action.payload !== 0) {
+        if (action.payload !== "") {
           const deleteIndex = state.products.findIndex(
             (p) => p.id === action.payload
           );

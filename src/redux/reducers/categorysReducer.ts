@@ -10,7 +10,7 @@ const initialState: CategoryState = {
   error: "",
 };
 
-const baseUrl = "https://api.escuelajs.co/api/v1/categories";
+const baseUrl = "http://localhost:5046/api/v1/categories";
 
 export const fetchAllCategoriesAsync = createAsyncThunk<
   Category[],

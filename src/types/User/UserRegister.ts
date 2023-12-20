@@ -1,7 +1,6 @@
 export interface UserRegister {
+  name: string;
   email: string;
   password: string;
-  name: string;
-  role: "customer";
   avatar: string;
 }

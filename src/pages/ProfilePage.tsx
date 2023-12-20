@@ -17,7 +17,7 @@ const ProfilePage = () => {
   }, []);
 
   const adminPanel =
-    currentUser && currentUser.role === "admin" ? <AdminPanel /> : <></>;
+    currentUser && currentUser.user.role === "Admin" ? <AdminPanel /> : <></>;
 
   return (
     <Container sx={{ mt: 10, px: 5 }}>
@@ -39,8 +39,8 @@ const ProfilePage = () => {
           >
             <CardMedia
               component="img"
-              image={currentUser.avatar}
-              alt={`${currentUser.name} avatar`}
+              image={currentUser.user.avatar}
+              alt={`${currentUser.user.name} avatar`}
               sx={{ height: 300, width: 300, borderRadius: 50 }}
             />
           </Grid>
@@ -49,10 +49,10 @@ const ProfilePage = () => {
               <Typography variant="h2">
                 Hello,
                 <br />
-                {currentUser.name}
+                {currentUser.user.name}
               </Typography>
               <Typography variant="h5" sx={{ mt: 3 }}>
-                Your email: {currentUser.email}
+                Your email: {currentUser.user.email}
               </Typography>
             </Box>
           </Grid>

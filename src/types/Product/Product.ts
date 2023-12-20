@@ -1,10 +1,14 @@
 import { Category } from "../Category/Category";
+import { Image } from "../Image/Image";
+import { Review } from "../Review/Review";
 
 export interface Product {
-  id: number;
+  id: string;
   title: string;
   price: number;
+  inventory: number;
   description: string;
   category: Category;
-  images: string[];
+  images: Image[];
+  reviews: Review[];
 }

@@ -42,7 +42,7 @@ const ProductItem = (props: ProductItemProps) => {
           <CardMedia
             component="img"
             height="200"
-            image={product.images[0]}
+            image={product.images[0].url}
             alt="market"
           />
           <CardContent>

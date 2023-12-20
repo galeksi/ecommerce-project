@@ -45,7 +45,7 @@ const UpdateProductForm = (props: UpdateProductFormProps) => {
 
   useEffect(() => {
     if (product) {
-      setAllImages(product.images);
+      setAllImages(product.images.map((i) => i.url));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product]);

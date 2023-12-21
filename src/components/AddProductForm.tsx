@@ -34,7 +34,7 @@ const initialFormData = {
   title: "",
   price: 0,
   description: "",
-  categoryId: 1,
+  categoryId: "",
   images: [],
 };
 
@@ -152,7 +152,7 @@ const AddProductForm = () => {
               fullWidth
               label="Category"
               name="categoryId"
-              value={Number(formData.categoryId)}
+              value={formData.categoryId}
               onChange={handleChange}
             >
               {categories &&

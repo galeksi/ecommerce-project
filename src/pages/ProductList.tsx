@@ -40,8 +40,6 @@ const ProductList = () => {
     return products.filter((p) => p.category.name === categoryFilter);
   };
 
-  console.log(products);
-
   const allProducts = categoryFilter ? filterByCategory() : products;
   const productsToView = paginationLoader(allProducts, page, itemsPerPage);
 

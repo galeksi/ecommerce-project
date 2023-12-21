@@ -1,9 +1,8 @@
-import { CurrentUser } from "./CurrentUser";
 import { User } from "./User";
 
 export interface UserState {
   users: User[];
-  currentUser?: CurrentUser;
+  currentUser?: User;
   loading: boolean;
   error: string;
   success: string;

@@ -37,8 +37,9 @@ const AdminUserList = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (currentUser) {
-      dispatch(fetchAllUsersAsync(currentUser.token));
+    const token = localStorage.getItem("access_token");
+    if (currentUser && token) {
+      dispatch(fetchAllUsersAsync(token));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

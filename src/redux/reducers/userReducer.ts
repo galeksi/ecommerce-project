@@ -5,7 +5,6 @@ import { User } from "../../types/User/User";
 import { UserState } from "../../types/User/UserState";
 import { Credentials } from "../../types/User/Credentials";
 import { UserRegister } from "../../types/User/UserRegister";
-import { CurrentUser } from "../../types/User/CurrentUser";
 
 const initialState: UserState = {
   users: [],
@@ -14,7 +13,7 @@ const initialState: UserState = {
   success: "",
 };
 
-const baseUrl = "http://localhost:5046/api/v1/users";
+const baseUrl = "http://localhost:5046/api/v1";
 
 export const fetchAllUsersAsync = createAsyncThunk<
   User[],
@@ -22,7 +21,7 @@ export const fetchAllUsersAsync = createAsyncThunk<
   { rejectValue: string }
 >("fetchAllUsersAsync", async (token, { rejectWithValue }) => {
   try {
-    const result = await axios.get(`${baseUrl}`, {
+    const result = await axios.get(`${baseUrl}/users`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -35,15 +34,13 @@ export const fetchAllUsersAsync = createAsyncThunk<
 });
 
 export const loginUserAsync = createAsyncThunk<
-  CurrentUser,
+  User,
   Credentials,
   { rejectValue: string }
 >("loginUserAsync", async (credentials, { rejectWithValue, dispatch }) => {
   try {
-    const result = await axios.post(`${baseUrl}/login`, credentials);
-
-    const { access_token } = result.data;
-
+    const result = await axios.post(`${baseUrl}/auth/login`, credentials);
+    const access_token = result.data;
     const authenticatedResult = await dispatch(
       authenticateUserAsync(access_token)
     );
@@ -63,18 +60,18 @@ export const loginUserAsync = createAsyncThunk<
 });
 
 export const authenticateUserAsync = createAsyncThunk<
-  CurrentUser,
+  User,
   string,
   { rejectValue: string }
 >("authenticateUserAsync", async (token, { rejectWithValue }) => {
   try {
-    const response = await axios.get(`${baseUrl}/profile`, {
+    const response = await axios.get(`${baseUrl}/auth`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-    const userProfile: CurrentUser = { user: response.data, token: token };
-    return userProfile;
+
+    return response.data;
   } catch (e) {
     const error = e as AxiosError;
     return rejectWithValue(error.message);
@@ -82,19 +79,19 @@ export const authenticateUserAsync = createAsyncThunk<
 });
 
 export const registerUserAsync = createAsyncThunk<
-  CurrentUser,
+  User,
   UserRegister,
   { rejectValue: string }
 >("registerUserAsync", async (userData, { rejectWithValue, dispatch }) => {
   try {
-    await axios.post(`${baseUrl}`, userData);
+    await axios.post(`${baseUrl}/users`, userData);
     const credentials: Credentials = {
       email: userData.email,
       password: userData.email,
     };
     const newUser = await dispatch(loginUserAsync(credentials));
     if (typeof newUser.payload === "string" || !newUser.payload) {
-      throw Error(newUser.payload || "Cannot login");
+      throw Error("Cannot login");
     } else {
       return newUser.payload;
     }
@@ -110,7 +107,7 @@ export const deleteUserAsync = createAsyncThunk<
   { rejectValue: string }
 >("deleteUserAsync", async (id, { rejectWithValue }) => {
   try {
-    await axios.delete(`${baseUrl}/${id}`);
+    await axios.delete(`${baseUrl}/users/${id}`);
     return id;
   } catch (e) {
     const error = e as AxiosError;
@@ -141,7 +138,7 @@ const userSlice = createSlice({
       .addCase(loginUserAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.currentUser = action.payload;
-        state.success = `User ${action.payload.user.name} login successfull`;
+        state.success = `User ${action.payload.name} login successfull`;
       })
       .addCase(authenticateUserAsync.fulfilled, (state, action) => {
         state.loading = false;
@@ -149,9 +146,9 @@ const userSlice = createSlice({
       })
       .addCase(registerUserAsync.fulfilled, (state, action) => {
         state.loading = false;
-        state.users.push(action.payload.user);
+        state.users.push(action.payload);
         state.currentUser = action.payload;
-        state.success = `Welcome ${action.payload.user.name}!`;
+        state.success = `Welcome ${action.payload.name}!`;
       })
       .addCase(deleteUserAsync.fulfilled, (state, action) => {
         state.loading = false;

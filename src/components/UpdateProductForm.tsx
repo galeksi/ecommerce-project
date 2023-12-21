@@ -46,6 +46,10 @@ const UpdateProductForm = (props: UpdateProductFormProps) => {
   useEffect(() => {
     if (product) {
       setAllImages(product.images.map((i) => i.url));
+      setTitle(product.title);
+      setPrice(product.price.toString());
+      setCategory(product.category.id.toString());
+      setDescription(product.description);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product]);
@@ -164,7 +168,7 @@ const UpdateProductForm = (props: UpdateProductFormProps) => {
               select
               fullWidth
               label="Category"
-              name="categoryId"
+              name="category"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
             >

@@ -31,13 +31,12 @@ import {
 
 const AdminUserList = () => {
   const [userFilter, setUserFilter] = useState<string>("");
-  const { currentUser, users, error, loading, success } = useAppSelector(
+  const { currentUser, users, error, loading, success, token } = useAppSelector(
     (state) => state.userReducer
   );
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
     if (currentUser && token) {
       dispatch(fetchAllUsersAsync(token));
     }
@@ -62,7 +61,7 @@ const AdminUserList = () => {
 
   const deleteUser = async (id: string, name: string) => {
     if (window.confirm(`Do you want to delete ${name}?`)) {
-      await dispatch(deleteUserAsync(id));
+      await dispatch(deleteUserAsync({ id, token }));
     }
   };
 

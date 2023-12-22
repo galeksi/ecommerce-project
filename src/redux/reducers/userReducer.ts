@@ -5,15 +5,15 @@ import { User } from "../../types/User/User";
 import { UserState } from "../../types/User/UserState";
 import { Credentials } from "../../types/User/Credentials";
 import { UserRegister } from "../../types/User/UserRegister";
+import { baseUrl } from "../shared/baserUrl";
 
 const initialState: UserState = {
   users: [],
+  token: "",
   loading: false,
   error: "",
   success: "",
 };
-
-const baseUrl = "http://localhost:5046/api/v1";
 
 export const fetchAllUsersAsync = createAsyncThunk<
   User[],
@@ -63,14 +63,14 @@ export const authenticateUserAsync = createAsyncThunk<
   User,
   string,
   { rejectValue: string }
->("authenticateUserAsync", async (token, { rejectWithValue }) => {
+>("authenticateUserAsync", async (token, { rejectWithValue, dispatch }) => {
   try {
     const response = await axios.get(`${baseUrl}/auth`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-
+    dispatch(userSlice.actions.addToken(token));
     return response.data;
   } catch (e) {
     const error = e as AxiosError;
@@ -103,11 +103,15 @@ export const registerUserAsync = createAsyncThunk<
 
 export const deleteUserAsync = createAsyncThunk<
   string,
-  string,
+  { id: string; token: string },
   { rejectValue: string }
->("deleteUserAsync", async (id, { rejectWithValue }) => {
+>("deleteUserAsync", async ({ id, token }, { rejectWithValue }) => {
   try {
-    await axios.delete(`${baseUrl}/users/${id}`);
+    await axios.delete(`${baseUrl}/users/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return id;
   } catch (e) {
     const error = e as AxiosError;
@@ -127,6 +131,9 @@ const userSlice = createSlice({
     },
     clearUserSuccess: (state) => {
       state.success = "";
+    },
+    addToken: (state, action) => {
+      state.token = action.payload;
     },
   },
   extraReducers: (builder) => {

@@ -29,17 +29,20 @@ import {
 import { clearUserError } from "../redux/reducers/userReducer";
 import axios, { AxiosError } from "axios";
 import theme from "../theme";
+import { Image } from "../types/Image/Image";
 
 const initialFormData = {
   title: "",
   price: 0,
   description: "",
   categoryId: "",
+  inventory: 0,
   images: [],
 };
 
 const AddProductForm = () => {
   const dispatch = useAppDispatch();
+  const { token } = useAppSelector((state) => state.userReducer);
   const { success, error } = useAppSelector((state) => state.productsReducer);
   const { categories } = useAppSelector((state) => state.categoriesReducer);
   const [formData, setFormData] = useState<NewProduct>(initialFormData);
@@ -107,8 +110,13 @@ const AddProductForm = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const completeFormData = { ...formData, images: allImages };
-    await dispatch(addProductAsync(completeFormData));
+    try {
+      const completeFormData = { ...formData, images: allImages };
+      await dispatch(addProductAsync({ data: completeFormData, token }));
+    } catch (e) {
+      const error = e as AxiosError;
+      dispatch(addErrorNotification(error.message));
+    }
   };
 
   return (

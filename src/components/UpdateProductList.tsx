@@ -30,6 +30,7 @@ import { ShowUpdateFormState } from "../types/components/ShowUpdateProductFormSt
 const UpdateProductList = () => {
   const dispatch = useAppDispatch();
   const { products, error } = useAppSelector((state) => state.productsReducer);
+  const { token } = useAppSelector((state) => state.userReducer);
   const [titleFilter, setTitleFilter] = useState<string>("");
   const [showUpdateForm, setShowUpdateForm] = useState<ShowUpdateFormState>({});
 
@@ -48,7 +49,7 @@ const UpdateProductList = () => {
 
   const deleteProduct = async (id: string, title: string) => {
     if (window.confirm(`Do you want to delete ${title}?`)) {
-      await dispatch(deleteProductAsync(id));
+      await dispatch(deleteProductAsync({ id, token }));
     }
   };
 

@@ -3,6 +3,7 @@ import axios, { AxiosError } from "axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { CategoryState } from "../../types/Category/CategoryState";
 import { Category } from "../../types/Category/Category";
+import { baseUrl } from "../shared/baserUrl";
 
 const initialState: CategoryState = {
   categories: [],
@@ -10,15 +11,13 @@ const initialState: CategoryState = {
   error: "",
 };
 
-const baseUrl = "http://localhost:5046/api/v1/categories";
-
 export const fetchAllCategoriesAsync = createAsyncThunk<
   Category[],
   void,
   { rejectValue: string }
 >("fetchAllCategoriesAsync", async (_, { rejectWithValue }) => {
   try {
-    const result = await axios.get(baseUrl);
+    const result = await axios.get(`${baseUrl}/categories`);
     return result.data;
   } catch (e) {
     const error = e as AxiosError;

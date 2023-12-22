@@ -31,9 +31,12 @@ import {
 } from "../redux/reducers/notificationReducer";
 import theme from "../theme";
 import axios, { AxiosError } from "axios";
+import { Image } from "../types/Image/Image";
+import { baseUrl } from "../redux/shared/baserUrl";
 
 const UpdateProductForm = (props: UpdateProductFormProps) => {
   const { product, onClose } = props;
+  const { token } = useAppSelector((state) => state.userReducer);
   const { error, success } = useAppSelector((state) => state.productsReducer);
   const { categories } = useAppSelector((state) => state.categoriesReducer);
   const dispatch = useAppDispatch();
@@ -41,11 +44,11 @@ const UpdateProductForm = (props: UpdateProductFormProps) => {
   const [price, setPrice] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [allImages, setAllImages] = useState<string[]>([]);
+  const [allImages, setAllImages] = useState<Image[]>([]);
 
   useEffect(() => {
     if (product) {
-      setAllImages(product.images.map((i) => i.url));
+      setAllImages(product.images.map((i) => i));
       setTitle(product.title);
       setPrice(product.price.toString());
       setCategory(product.category.id.toString());
@@ -72,7 +75,7 @@ const UpdateProductForm = (props: UpdateProductFormProps) => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const productUpdate: ProductUpdate = { id: product.id, images: allImages };
+    const productUpdate: ProductUpdate = { id: product.id };
     if (title) {
       productUpdate.title = title;
     }
@@ -80,13 +83,13 @@ const UpdateProductForm = (props: UpdateProductFormProps) => {
       productUpdate.price = Number(price);
     }
     if (category) {
-      productUpdate.categoryId = Number(category);
+      productUpdate.categoryId = category;
     }
     if (description) {
       productUpdate.description = description;
     }
 
-    await dispatch(updateProductAsync(productUpdate));
+    await dispatch(updateProductAsync({ token, data: productUpdate }));
 
     setTitle("");
     setPrice("");
@@ -94,9 +97,20 @@ const UpdateProductForm = (props: UpdateProductFormProps) => {
     setDescription("");
   };
 
-  const removeImage = (url: string) => {
-    const updatedImages = allImages.filter((i) => i !== url);
-    setAllImages(updatedImages);
+  const removeImage = async (id: string) => {
+    try {
+      await axios.delete(`${baseUrl}/images/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const updatedImages = allImages.filter((i) => i.id !== id);
+      setAllImages(updatedImages);
+    } catch (e) {
+      const error = e as AxiosError;
+      dispatch(addErrorNotification(error.message));
+    }
   };
 
   const handleFileChange = async (
@@ -117,8 +131,17 @@ const UpdateProductForm = (props: UpdateProductFormProps) => {
             },
           }
         );
+        const newImage: Image = await axios.post(
+          `${baseUrl}/images`,
+          { url: response.data.location, productId: product.id },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-        setAllImages((prevArray) => [...prevArray, response.data.location]);
+        setAllImages((prevArray) => [...prevArray, newImage]);
       } catch (e) {
         const error = e as AxiosError;
         dispatch(addErrorNotification(error.message));
@@ -215,12 +238,12 @@ const UpdateProductForm = (props: UpdateProductFormProps) => {
           <Grid item xs={12}>
             <Stack direction="row" sx={{ my: 2 }}>
               {allImages &&
-                allImages.map((image, index) => (
-                  <Box key={index} sx={{ position: "relative" }}>
+                allImages.map((image) => (
+                  <Box key={image.id} sx={{ position: "relative" }}>
                     <IconButton
                       size="small"
                       aria-label="Remove image"
-                      onClick={() => removeImage(image)}
+                      onClick={() => removeImage(image.id)}
                       color="inherit"
                       sx={{
                         position: "absolute",
@@ -236,7 +259,7 @@ const UpdateProductForm = (props: UpdateProductFormProps) => {
                     </IconButton>
                     <CardMedia
                       component="img"
-                      image={image}
+                      image={image.url}
                       alt="image URL"
                       sx={{
                         height: 100,

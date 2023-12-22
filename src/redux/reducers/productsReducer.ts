@@ -6,6 +6,7 @@ import { ProductState } from "../../types/Product/ProductState";
 import { NewProduct } from "../../types/Product/NewProduct";
 import { ProductUpdate } from "../../types/Product/ProductUpdate";
 import { ProductQuery } from "../../types/Product/ProductQuery";
+import { baseUrl } from "../shared/baserUrl";
 
 const initialState: ProductState = {
   products: [],
@@ -14,8 +15,6 @@ const initialState: ProductState = {
   error: "",
   success: "",
 };
-const baseUrl = "https://api.escuelajs.co/api/v1/products";
-const newUrl = "http://localhost:5046/api/v1/products";
 
 export const fetchAllProductsAsync = createAsyncThunk<
   ProductQuery,
@@ -23,7 +22,7 @@ export const fetchAllProductsAsync = createAsyncThunk<
   { rejectValue: string }
 >("fetchAllProductsAsync", async (_, { rejectWithValue }) => {
   try {
-    const response = await axios.get(newUrl);
+    const response = await axios.get(`${baseUrl}/products`);
     return response.data;
   } catch (e) {
     const error = e as AxiosError;
@@ -33,11 +32,15 @@ export const fetchAllProductsAsync = createAsyncThunk<
 
 export const addProductAsync = createAsyncThunk<
   Product,
-  NewProduct,
+  { token: string; data: NewProduct },
   { rejectValue: string }
->("addProductAsync", async (newProduct, { rejectWithValue }) => {
+>("addProductAsync", async ({ token, data }, { rejectWithValue }) => {
   try {
-    const response = await axios.post(baseUrl, newProduct);
+    const response = await axios.post(`${baseUrl}/products`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (e) {
     const error = e as AxiosError;
@@ -47,12 +50,16 @@ export const addProductAsync = createAsyncThunk<
 
 export const updateProductAsync = createAsyncThunk<
   Product,
-  ProductUpdate,
+  { token: string; data: ProductUpdate },
   { rejectValue: string }
->("updateProductAsync", async (productUpdate, { rejectWithValue }) => {
+>("updateProductAsync", async ({ token, data }, { rejectWithValue }) => {
   try {
-    const { id, ...updateData } = productUpdate;
-    const response = await axios.put(`${baseUrl}/${id}`, updateData);
+    const { id, ...updateData } = data;
+    const response = await axios.put(`${baseUrl}/products/${id}`, updateData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (e) {
     const error = e as AxiosError;
@@ -62,11 +69,15 @@ export const updateProductAsync = createAsyncThunk<
 
 export const deleteProductAsync = createAsyncThunk<
   string,
-  string,
+  { token: string; id: string },
   { rejectValue: string }
->("deleteProductAsync", async (id, { rejectWithValue }) => {
+>("deleteProductAsync", async ({ token, id }, { rejectWithValue }) => {
   try {
-    const response = await axios.delete(`${baseUrl}/${id}`);
+    const response = await axios.delete(`${baseUrl}/products/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data === true ? id : "";
   } catch (e) {
     const error = e as AxiosError;

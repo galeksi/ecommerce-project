@@ -6,5 +6,5 @@ export interface NewProduct {
   price: number;
   inventory: number;
   categoryId: string;
-  images: string[];
+  imageUrls: string[];
 }

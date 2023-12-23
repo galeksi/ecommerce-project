@@ -37,7 +37,7 @@ const initialFormData = {
   description: "",
   categoryId: "",
   inventory: 0,
-  images: [],
+  imageUrls: [],
 };
 
 const AddProductForm = () => {
@@ -60,6 +60,8 @@ const AddProductForm = () => {
 
   useEffect(() => {
     if (error) {
+      console.log(error);
+
       dispatch(addErrorNotification(error));
       dispatch(clearUserError());
     }
@@ -86,23 +88,17 @@ const AddProductForm = () => {
       const selectedFile = event.target.files[0];
       const formData = new FormData();
       formData.append("file", selectedFile);
+      const response = await axios.post(
+        "https://api.escuelajs.co/api/v1/files/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
-      try {
-        const response = await axios.post(
-          "https://api.escuelajs.co/api/v1/files/upload",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-
-        setAllImages((prevArray) => [...prevArray, response.data.location]);
-      } catch (e) {
-        const error = e as AxiosError;
-        dispatch(addErrorNotification(error.message));
-      }
+      setAllImages((prevArray) => [...prevArray, response.data.location]);
     } else {
       dispatch(addErrorNotification("Incorrect file added"));
     }
@@ -111,10 +107,12 @@ const AddProductForm = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const completeFormData = { ...formData, images: allImages };
+      const completeFormData = { ...formData, imageUrls: allImages };
       await dispatch(addProductAsync({ data: completeFormData, token }));
     } catch (e) {
       const error = e as AxiosError;
+      console.log(error.message);
+
       dispatch(addErrorNotification(error.message));
     }
   };

@@ -98,6 +98,8 @@ const UpdateProductForm = (props: UpdateProductFormProps) => {
   };
 
   const removeImage = async (id: string) => {
+    console.log(id);
+
     try {
       await axios.delete(`${baseUrl}/images/${id}`, {
         headers: {
@@ -131,7 +133,9 @@ const UpdateProductForm = (props: UpdateProductFormProps) => {
             },
           }
         );
-        const newImage: Image = await axios.post(
+        console.log(response.data.location);
+
+        const newImage = await axios.post(
           `${baseUrl}/images`,
           { url: response.data.location, productId: product.id },
           {
@@ -141,7 +145,7 @@ const UpdateProductForm = (props: UpdateProductFormProps) => {
           }
         );
 
-        setAllImages((prevArray) => [...prevArray, newImage]);
+        setAllImages((prevArray) => [...prevArray, newImage.data]);
       } catch (e) {
         const error = e as AxiosError;
         dispatch(addErrorNotification(error.message));

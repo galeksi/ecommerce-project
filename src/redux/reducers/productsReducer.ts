@@ -55,11 +55,15 @@ export const updateProductAsync = createAsyncThunk<
 >("updateProductAsync", async ({ token, data }, { rejectWithValue }) => {
   try {
     const { id, ...updateData } = data;
-    const response = await axios.put(`${baseUrl}/products/${id}`, updateData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.patch(
+      `${baseUrl}/products/${id}`,
+      updateData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data;
   } catch (e) {
     const error = e as AxiosError;

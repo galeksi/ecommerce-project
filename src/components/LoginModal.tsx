@@ -21,6 +21,7 @@ import {
   addNotification,
 } from "../redux/reducers/notificationReducer";
 import useAppSelector from "../hooks/useAppSelector";
+import { AxiosError } from "axios";
 
 const LoginModal = (props: LoginModalProps) => {
   const { open, onClose } = props;
@@ -51,7 +52,12 @@ const LoginModal = (props: LoginModalProps) => {
   }, [error]);
 
   const handleLogin = async () => {
-    await dispatch(loginUserAsync({ email, password }));
+    try {
+      await dispatch(loginUserAsync({ email, password }));
+    } catch (e) {
+      const error = e as AxiosError;
+      dispatch(addErrorNotification(error.message));
+    }
   };
 
   const handleRegisterButton = () => {

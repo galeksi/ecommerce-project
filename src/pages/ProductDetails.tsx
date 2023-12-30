@@ -16,6 +16,7 @@ import { Product } from "../types/Product/Product";
 import useAppDispatch from "../hooks/useAppDispatch";
 import { addCart } from "../redux/reducers/cartReducer";
 import { addErrorNotification } from "../redux/reducers/notificationReducer";
+import { baseUrl } from "../redux/shared/baserUrl";
 
 const ProductDetails = () => {
   const [product, setProduct] = useState<Product | undefined>();
@@ -25,9 +26,7 @@ const ProductDetails = () => {
 
   const fetchProduct = async () => {
     try {
-      const response = await axios.get(
-        `http://127.0.0.1:5046/api/v1/products/${id}`
-      );
+      const response = await axios.get(`${baseUrl}/products/${id}`);
       const data: Product = response.data;
       setProduct(data);
     } catch (e) {
@@ -56,7 +55,7 @@ const ProductDetails = () => {
                 <CardMedia
                   component="img"
                   height="500"
-                  image={product.images[imageIndex].url}
+                  image={`https://res.cloudinary.com/galeksi/image/upload/v1/ecom_fullstack/${product.images[imageIndex].url}`}
                   alt="large product image"
                 />
                 <Stack direction="row">
@@ -70,7 +69,7 @@ const ProductDetails = () => {
                         <CardMedia
                           component="img"
                           height="100"
-                          image={image.url}
+                          image={`https://res.cloudinary.com/galeksi/image/upload/v1/ecom_fullstack/${image.url}`}
                           alt="small product image"
                           sx={{ mt: 2, mr: 2, width: 100 }}
                         />

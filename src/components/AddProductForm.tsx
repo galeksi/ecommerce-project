@@ -88,17 +88,17 @@ const AddProductForm = () => {
       const selectedFile = event.target.files[0];
       const formData = new FormData();
       formData.append("file", selectedFile);
-      const response = await axios.post(
-        "https://api.escuelajs.co/api/v1/files/upload",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      formData.append("upload_preset", process.env.REACT_APP_PRESET || "");
+      try {
+        const response = await axios.post(
+          `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUD_NAME}/image/upload`,
+          formData
+        );
 
-      setAllImages((prevArray) => [...prevArray, response.data.location]);
+        setAllImages((prevArray) => [...prevArray, response.data.public_id]);
+      } catch (error) {
+        dispatch(addErrorNotification("Error uploading image to Cloudinary"));
+      }
     } else {
       dispatch(addErrorNotification("Incorrect file added"));
     }
@@ -225,7 +225,7 @@ const AddProductForm = () => {
                     </IconButton>
                     <CardMedia
                       component="img"
-                      image={image}
+                      image={`${process.env.REACT_APP_CLOUD_URL}/${image}`}
                       alt="image URL"
                       sx={{
                         height: 100,

@@ -55,7 +55,7 @@ const ProductDetails = () => {
                 <CardMedia
                   component="img"
                   height="500"
-                  image={`https://res.cloudinary.com/galeksi/image/upload/v1/ecom_fullstack/${product.images[imageIndex].url}`}
+                  image={`${process.env.REACT_APP_CLOUD_URL}/${product.images[imageIndex].url}`}
                   alt="large product image"
                 />
                 <Stack direction="row">
@@ -69,7 +69,7 @@ const ProductDetails = () => {
                         <CardMedia
                           component="img"
                           height="100"
-                          image={`https://res.cloudinary.com/galeksi/image/upload/v1/ecom_fullstack/${image.url}`}
+                          image={`${process.env.REACT_APP_CLOUD_URL}/${image.url}`}
                           alt="small product image"
                           sx={{ mt: 2, mr: 2, width: 100 }}
                         />

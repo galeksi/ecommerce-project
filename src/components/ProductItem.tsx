@@ -42,7 +42,7 @@ const ProductItem = (props: ProductItemProps) => {
           <CardMedia
             component="img"
             height="200"
-            image={`https://res.cloudinary.com/galeksi/image/upload/v1/ecom_fullstack/${product.images[0].url}`}
+            image={`${process.env.REACT_APP_CLOUD_URL}/${product.images[0].url}`}
             alt="market"
           />
           <CardContent>

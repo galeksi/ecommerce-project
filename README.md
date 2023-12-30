@@ -4,7 +4,9 @@
 
 ## Introduction:
 
-A frontend ecommerce project providing a basic webshop experience with the use of a public API endpoint [https://fakeapi.platzi.com/](https://fakeapi.platzi.com/).
+A frontend ecommerce project providing a basic webshop experience with the use of a .NET backend API.
+API endpoint: [https://ecommerce-fullstack.azurewebsites.net/api/v1/](https://ecommerce-fullstack.azurewebsites.net/api/v1/).
+Backend Repo: [https://github.com/galeksi/fs16_CSharp-FullStack](https://github.com/galeksi/fs16_CSharp-FullStack)
 
 The project provides CRUD operations for Products, Users, Categories as well as fileuploads and authentification.
 
@@ -17,27 +19,27 @@ The project is build with create-react-app and Typescript using Redux toolkit fo
 3. Getting Started
 4. Usage
 5. Architecture & Design
-6. Testing
-7. Deployment
+6. Deployment
 
 ## Getting Started:
 
 Clone the repo with git clone git@github.com:galeksi/ecommerce-project.git
 
-Install all dependencies with `npm intstall`  or `yarn install`.
+Install all dependencies with `npm intstall` or `yarn install`.
 
-No .env file or further config needed.
+.env file includes:
+
+- REACT_APP_CLOUD_URL
+- REACT_APP_CLOUD_NAME
+- REACT_APP_PRESET
 
 ## Usage:
-
 
 #### Scripts:
 
 - `npm start`: start dev server
-- `npm test`: run all tests
 - `npm run build`: create production build
 - `npm run eject`: Remove single build dependency from project
-
 
 #### Features:
 
@@ -45,11 +47,9 @@ No .env file or further config needed.
 
 ## Architecture & Design:
 
-
 #### The project follows a horizontal arcitecture:
 
 ![Structure](Horizontal-structure.jpg)
-
 
 State in managed globally with a redux-toolkit store with its reducers/slices in folder "redux". There are five main pages handled with react-router:
 
@@ -83,12 +83,6 @@ State in managed globally with a redux-toolkit store with its reducers/slices in
 ├── README.md
 └── tsconfig.json
 ```
-
-## Testing:
-
-`npm test`: run all tests 
-
-Testing is done wit build in Jest testing library. Testing includes unit testing for all five reducers (Prosucts, Users, Categories, Cart and Notifications) and their operations. All server requests in the tests are handeled with a mock server (msw).
 
 ## Deployment:
 

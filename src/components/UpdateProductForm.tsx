@@ -122,22 +122,17 @@ const UpdateProductForm = (props: UpdateProductFormProps) => {
       const selectedFile = event.target.files[0];
       const formData = new FormData();
       formData.append("file", selectedFile);
+      formData.append("upload_preset", process.env.REACT_APP_PRESET || "");
 
       try {
         const response = await axios.post(
-          "https://api.escuelajs.co/api/v1/files/upload",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
+          `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUD_NAME}/image/upload`,
+          formData
         );
-        console.log(response.data.location);
 
         const newImage = await axios.post(
           `${baseUrl}/images`,
-          { url: response.data.location, productId: product.id },
+          { url: response.data.public_id, productId: product.id },
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -263,7 +258,7 @@ const UpdateProductForm = (props: UpdateProductFormProps) => {
                     </IconButton>
                     <CardMedia
                       component="img"
-                      image={image.url}
+                      image={`${process.env.REACT_APP_CLOUD_URL}/${image.url}`}
                       alt="image URL"
                       sx={{
                         height: 100,

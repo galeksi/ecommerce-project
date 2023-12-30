@@ -1,5 +1,10 @@
 # Front-end Project - ecommerce shop
 
+![TypeScript](https://img.shields.io/badge/TypeScript-v.4-green)
+![SASS](https://img.shields.io/badge/SASS-v.4-hotpink)
+![React](https://img.shields.io/badge/React-v.18-blue)
+![Redux toolkit](https://img.shields.io/badge/Redux-v.1.9-brown)
+
 [https://ecommerce-project-sigma-seven.vercel.app/](https://ecommerce-project-sigma-seven.vercel.app/)
 
 ## Introduction:

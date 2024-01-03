@@ -10,7 +10,7 @@
 ## Introduction:
 
 A frontend ecommerce project providing a basic webshop experience with the use of a .NET backend API.
-API endpoint: [https://ecommerce-fullstack.azurewebsites.net/api/v1/](https://ecommerce-fullstack.azurewebsites.net/api/v1/).
+API endpoint: [https://ecommerce-fullstack.azurewebsites.net/api/v1/](https://ecommerce-fullstack.azurewebsites.net/api/v1/)
 Backend Repo: [https://github.com/galeksi/fs16_CSharp-FullStack](https://github.com/galeksi/fs16_CSharp-FullStack)
 
 The project provides CRUD operations for Products, Users, Categories as well as fileuploads and authentification.

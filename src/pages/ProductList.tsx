@@ -43,6 +43,8 @@ const ProductList = () => {
   const allProducts = categoryFilter ? filterByCategory() : products;
   const productsToView = paginationLoader(allProducts, page, itemsPerPage);
 
+  console.log(products);
+
   return (
     <Box>
       <CardMedia
